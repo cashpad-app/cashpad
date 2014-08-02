@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-bower_components/
-examples/
-=======
 ### Custom ###
 grammar.js
+bower_components/
 
 # Created by http://www.gitignore.io
 
@@ -36,5 +33,3 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
-
->>>>>>> Add gitignore for node
