@@ -1,0 +1,21 @@
+{
+  "name": "geekywallet",
+  "version": "0.0.0",
+  "homepage": "https://github.com/buildo/geekywallet",
+  "authors": [
+    "we@buildo.io"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "abbrev-js": "isaacs/abbrev-js#~1.0.5",
+    "underscore": "~1.6.0"
+  }
+}
