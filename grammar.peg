@@ -5,7 +5,12 @@
 
 start
   = h:header EOL+ ll:lines {
-      return {header: h, lines: ll}
+      return {
+        group: {
+          context: h,
+          lines: ll
+        }
+      }
     }
 
 header
