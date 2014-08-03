@@ -53,9 +53,9 @@ define (require) ->
                 lineTable.append(
                   '<tr>' +
                     '<td>' + ben.name + '</td>' +
-                    '<td>' + line.computed.spent[ben.name] + '</td>' +
-                    '<td>' + line.computed.given[ben.name] + '</td>' +
-                    '<td>' + line.computed.balance[ben.name] + '</td>' +
+                    '<td>' + line.computed.spent[ben.name].toFixed(2) + '</td>' +
+                    '<td>' + line.computed.given[ben.name].toFixed(2) + '</td>' +
+                    '<td>' + line.computed.balance[ben.name].toFixed(2) + '</td>' +
                   '</tr>')
             $("#partials").append(lineTitle)
             $("#partials").append(lineTable)
@@ -74,7 +74,11 @@ define (require) ->
           $('#totals').append(
             '<tr>' +
               '<td>' + name + '</td>' +
-              '<td>' + total.spent + '</td>' +
-              '<td>' + total.given + '</td>' +
-              '<td>' + total.balance + '</td>' +
+              '<td>' + total.spent.toFixed(2) + '</td>' +
+              '<td>' + total.given.toFixed(2) + '</td>' +
+              '<td>' + total.balance.toFixed(2) + '</td>' +
             '</tr>')
+
+         ChartHelper = require('charts')
+         chartHelper = new ChartHelper
+         chartHelper.drawTotalsChart totals, 'totalsChart'

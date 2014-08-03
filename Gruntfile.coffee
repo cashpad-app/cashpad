@@ -17,8 +17,13 @@ module.exports = (grunt) ->
         files:
           'test/test.js': 'test/*.coffee'
       lib:
-        files:
-          'dist/lib/geekywalletlib.js': 'lib/geekywalletlib.coffee'
+        files: [
+          expand: true
+          src: '**/*.coffee'
+          dest: 'dist/lib'
+          cwd: 'lib'
+          ext: '.js'
+        ]
       app:
         files:
           'dist/app.js': 'app/app.coffee'
