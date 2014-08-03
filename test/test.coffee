@@ -83,3 +83,60 @@ describe 'brain', ->
       line.beneficiaries.should.containDeep [name: 'luca']
       line.beneficiaries.should.containDeep [name: 'gabriele']
       line.beneficiaries.should.containDeep [name: 'daniele']
+
+    it 'should compute the fixed amount', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[4]
+      line.beneficiaries.filter((b) -> b.name == 'luca')[0].fixedAmount.should.equal 0
+      line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].fixedAmount.should.equal 0
+      line.beneficiaries.filter((b) -> b.name == 'daniele')[0].fixedAmount.should.equal 10
+      line.computing.totalFixedAmount.should.equal 10
+
+    it 'should compute the offset', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[5]
+      line.beneficiaries.filter((b) -> b.name == 'luca')[0].offset.should.equal -10
+      line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].offset.should.equal 5
+      line.beneficiaries.filter((b) -> b.name == 'daniele')[0].offset.should.equal 0
+      line.computing.totalOffset.should.equal -5
+
+    it 'should compute the multiplier', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[6]
+      line.beneficiaries.filter((b) -> b.name == 'luca')[0].multiply.should.equal 1
+      line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].multiply.should.equal 2
+      line.beneficiaries.filter((b) -> b.name == 'daniele')[0].multiply.should.equal 1
+      line.computing.totalMultiply.should.equal 4
+
+    it 'should compute the total spent amount', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[7]
+      line.computing.totalSpentAmount.should.equal 15 + 7 + 18
+
+    it 'should compute the owed amount', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[7]
+      line.computed.balance.luca.should.equal -3
+      line.computed.balance.gabriele.should.equal -5
+      line.computed.balance.daniele.should.equal 8
+
+    it 'should compute the given amount', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[7]
+      line.computed.given.balance.luca.should.equal 7
+      line.computed.given.gabriele.should.equal 15
+      line.computed.given.daniele.should.equal 18
+
+    it 'should compute the spent amount', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[7]
+      line.computed.spent.balance.luca.should.equal 10
+      line.computed.spent.gabriele.should.equal 20
+      line.computed.spent.daniele.should.equal 10
