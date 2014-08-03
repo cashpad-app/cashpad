@@ -6,7 +6,7 @@ requirejs = require('requirejs')
 requirejs.config nodeRequire: require
 brain = new (requirejs 'dist/lib/geekywalletlib.js')
 
-parser = peg.buildParser fs.readFileSync 'grammar.peg', 'utf8'
+parser = peg.buildParser fs.readFileSync 'lib/syntax/grammar.peg', 'utf8'
 wallet = fs.readFileSync 'examples/plain.wallet', 'utf8'
 lines = null
 
