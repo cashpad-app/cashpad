@@ -36,14 +36,16 @@ define (require) ->
             lineTable = $('<table></table>')
               .addClass('table')
               .addClass('table-striped')
+              .addClass('table-condensed')
+              .addClass('table-hover')
 
             lineTable.append(
               '<thead>' +
                 '<tr>' +
-                  '<td>name</td>' +
-                  '<td>spent</td>' +
-                  '<td>given</td>' +
-                  '<td>balance</td>' +
+                  '<th>name</th>' +
+                  '<th>spent</th>' +
+                  '<th>given</th>' +
+                  '<th>balance</th>' +
                 '</tr>' +
               '</thead>')
             for ben in line.beneficiaries
@@ -61,10 +63,10 @@ define (require) ->
         $('#totals').append(
           '<thead>' +
             '<tr>' +
-              '<td>name</td>' +
-              '<td>spent</td>' +
-              '<td>given</td>' +
-              '<td>balance</td>' +
+              '<th>name</th>' +
+              '<th>spent</th>' +
+              '<th>given</th>' +
+              '<th>balance</th>' +
             '</tr>' +
           '</thead>')
 
