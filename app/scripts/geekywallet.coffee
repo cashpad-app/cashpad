@@ -1,5 +1,6 @@
 define (require) ->
   Brain = require('geekywalletlib')
+  parser = require('syntax/parser')
   $(document).ready () ->
     $('#run1').click () ->
       rawInputString = $('#rawInput').val()
