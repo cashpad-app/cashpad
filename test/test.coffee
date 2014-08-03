@@ -109,7 +109,7 @@ describe 'brain', ->
       line = computedLines[5]
       line.beneficiaries.filter((b) -> b.name == 'luca')[0].offset.should.equal -10
       line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].offset.should.equal 5
-      line.beneficiaries.filter((b) -> b.name == 'daniele')[0].offset.should.equal 0
+      (line.beneficiaries.filter((b) -> b.name == 'daniele')[0].offset == null).should.be.true
       line.computing.totalOffset.should.equal -5
 
     it 'should compute the multiplier', ->
@@ -118,7 +118,7 @@ describe 'brain', ->
       line = computedLines[6]
       line.beneficiaries.filter((b) -> b.name == 'luca')[0].multiply.should.equal 1
       line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].multiply.should.equal 2
-      line.beneficiaries.filter((b) -> b.name == 'daniele')[0].multiply.should.equal 1
+      (line.beneficiaries.filter((b) -> b.name == 'daniele')[0].multiply == null).should.be.true
       line.computing.totalMultiply.should.equal 3 # only people with a non-fixed amount are considered
 
     it 'should compute the total spent amount', ->

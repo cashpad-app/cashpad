@@ -30,11 +30,39 @@ define ->
       # preprocessing tasks..
       @preprocessLine(line)
       # intermediate computation steps
+      totalSpentAmount = line.payers.sum (x) -> x.amount
+      totalFixedAmount = line.beneficiaries.sum (x) -> x.fixedAmount
+      totalOffset = line.beneficiaries.sum (x) -> x.offset
+      totalMultiply = line.beneficiaries.sum (x) -> x.multiply
+      amountToDivide = totalSpentAmount - totalFixedAmount - totalOffset
+      amountForEachOne = amountToDivide / totalMultiply
       line.computing =
-        totalSpentAmount: line.payers.sum (x) -> x.amount
-        totalFixedAmount: line.beneficiaries.sum (x) -> x.fixedAmount
-        totalOffset: line.beneficiaries.sum (x) -> x.offset
-        totalMultiply:line.beneficiaries.sum (x) -> x.multiply
+        totalSpentAmount: totalSpentAmount
+        totalOffset: totalOffset
+        totalMultiply: totalMultiply
+        totalFixedAmount: totalFixedAmount
+        amountToDivide: amountToDivide
+        amountForEachOne: amountForEachOne
+      # compute balance
+      line.computed =
+        balance: {}
+        given: {}
+        spent: {}
+      line.beneficiaries.map (ben) ->
+        # spent
+        line.computed.spent[ben.name] = if ben.fixedAmount
+          ben.fixedAmount
+        else
+          amountForEachOne * ben.multiply + ben.offset
+        # set given to 0 as default for beneficiaries
+        line.computed.given[ben.name] = 0
+      # given
+      line.payers.map (payer) ->
+        line.computed.given[payer.name] = payer.amount
+      # compute balance
+      line.beneficiaries.map (ben) ->
+        line.computed.balance[ben.name] = line.computed.given[ben.name] - line.computed.spent[ben.name]
+
       # return line object
       line
 
@@ -49,7 +77,7 @@ define ->
         line.beneficiaries.push {name: name} for name in missingBeneficiaries
       # compute fixed amount, offset and multiply
       line.beneficiaries = line.beneficiaries.map (ben) ->
-        ben.fixedAmount = 0
+        ben.fixedAmount = null
         ben.offset = 0
         ben.multiply = 1
         if ben.amount?
@@ -59,6 +87,8 @@ define ->
             ben.multiply = ben.amount if ben.modifier == '*'
           else
             ben.fixedAmount = ben.amount
+            ben.multiply = null
+            ben.offset = null
         ben
 
     getOption: (line, optionName) =>
