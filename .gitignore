@@ -3,6 +3,7 @@ lib/*.js
 test/*.js
 grammar.js
 bower_components/
+dist/
 
 # Created by http://www.gitignore.io
 

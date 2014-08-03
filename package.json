@@ -8,6 +8,9 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-coffee": "^0.10.1",
+    "grunt-mocha-test": "^0.11.0",
     "pegjs": "^0.8.0",
     "requirejs": "^2.1.14",
     "should": "^4.0.4"
