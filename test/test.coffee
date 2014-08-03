@@ -150,3 +150,12 @@ describe 'brain', ->
       line.computed.spent.luca.should.equal 10
       line.computed.spent.gabriele.should.equal 20
       line.computed.spent.daniele.should.equal 10
+
+    it 'should allow for abbreviations', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[8]
+      line.beneficiaries.should.have.length 1
+      line.payers.should.have.length 1
+      line.beneficiaries.should.containDeep [name: 'daniele']
+      line.payers.should.containDeep [name: 'gabriele']
