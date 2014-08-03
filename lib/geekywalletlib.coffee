@@ -1,6 +1,11 @@
 define ->
+
   Array::sum = (fn = (x) -> x) ->
     @reduce ((a, b) -> a + fn b), 0
+
+  Array::hasElementMatching = (fn = (x) -> x) ->
+    filtered = @filter ((item, i) -> fn item)
+    filtered.length > 0
 
   class Brain
 
@@ -15,7 +20,7 @@ define ->
       group.lines.map (line) ->
         if line.context? # line is actually a group...
           console.log "TODO manage nested context"
-        else  
+        else
           line.context = {}
           line.context.people = group.context.people
         line
@@ -29,16 +34,24 @@ define ->
       computing.totalSpentAmount = line.payers.sum (x) -> x.amount
       computing.totalFixedAmount = line.beneficiaries.sum (x) -> x.fixedAmount
       computing.totalOffset = line.beneficiaries.sum (x) -> x.offset
-      computing.totalMultiply =line.beneficiaries.sum (x) -> x.multiply 
+      computing.totalMultiply =line.beneficiaries.sum (x) -> x.multiply
       # save intermediate computation in line
       line.computing = computing
       # return line object
       line
 
-    preprocessLine: (line) => 
+    preprocessLine: (line) =>
+      console.log "line", line
       # add beneficiaries from context if none is defined
       unless line.beneficiaries?
         line.beneficiaries = line.context.people.map (name) -> {name: name}
+      # add remaining beneficiaries if option "group" is present
+      if @getOption(line, "group")
+        missingBeneficiaries = line.context.people.filter (personName) =>
+          console.log "personName", personName
+          not line.beneficiaries.hasElementMatching (ben) -> ben.name == personName
+        console.log "missing", missingBeneficiaries
+        line.beneficiaries.push {name: name} for name in missingBeneficiaries
       # compute fixed amount, offset and multiply
       line.beneficiaries = line.beneficiaries.map (ben) ->
         ben.fixedAmount = 0
@@ -52,4 +65,8 @@ define ->
           else
             ben.fixedAmount = ben.amount
         ben
+
+    getOption: (line, optionName) =>
+      line.options.filter((x) -> x.name == optionName)[0]
+
 
