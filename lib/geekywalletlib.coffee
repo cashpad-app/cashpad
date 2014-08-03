@@ -30,27 +30,22 @@ define ->
       # preprocessing tasks..
       @preprocessLine(line)
       # intermediate computation steps
-      computing = {}
-      computing.totalSpentAmount = line.payers.sum (x) -> x.amount
-      computing.totalFixedAmount = line.beneficiaries.sum (x) -> x.fixedAmount
-      computing.totalOffset = line.beneficiaries.sum (x) -> x.offset
-      computing.totalMultiply =line.beneficiaries.sum (x) -> x.multiply
-      # save intermediate computation in line
-      line.computing = computing
+      line.computing =
+        totalSpentAmount: line.payers.sum (x) -> x.amount
+        totalFixedAmount: line.beneficiaries.sum (x) -> x.fixedAmount
+        totalOffset: line.beneficiaries.sum (x) -> x.offset
+        totalMultiply:line.beneficiaries.sum (x) -> x.multiply
       # return line object
       line
 
     preprocessLine: (line) =>
-      console.log "line", line
       # add beneficiaries from context if none is defined
       unless line.beneficiaries?
         line.beneficiaries = line.context.people.map (name) -> {name: name}
       # add remaining beneficiaries if option "group" is present
       if @getOption(line, "group")
         missingBeneficiaries = line.context.people.filter (personName) =>
-          console.log "personName", personName
           not line.beneficiaries.hasElementMatching (ben) -> ben.name == personName
-        console.log "missing", missingBeneficiaries
         line.beneficiaries.push {name: name} for name in missingBeneficiaries
       # compute fixed amount, offset and multiply
       line.beneficiaries = line.beneficiaries.map (ben) ->
