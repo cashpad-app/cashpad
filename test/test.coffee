@@ -119,7 +119,7 @@ describe 'brain', ->
       line.beneficiaries.filter((b) -> b.name == 'luca')[0].multiply.should.equal 1
       line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].multiply.should.equal 2
       line.beneficiaries.filter((b) -> b.name == 'daniele')[0].multiply.should.equal 1
-      line.computing.totalMultiply.should.equal 4
+      line.computing.totalMultiply.should.equal 3 # only people with a non-fixed amount are considered
 
     it 'should compute the total spent amount', ->
       result = parser.parse wallet
