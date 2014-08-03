@@ -75,8 +75,8 @@ transaction
       _
       arrow:("->" / "<-")
       bb:(_? b:beneficiaries { return b; })?
-      opt:(_? o:option { return o; })? {
-        return [bb, opt, arrow];
+      opts:options {
+        return [bb, opts, arrow];
       }
     )? {
       var o = {
@@ -155,9 +155,12 @@ beneficiary
 modifier
   = "+" / "-" / "*"
 
+options
+  = opts:(_ o:option { return o; })* { return opts; }
+
 option
-  = "..." { return "group"; }
-  / "$"+ { return "split"; }
+  = "..." { return { name: "group" }; }
+  / "$"+ { return { name: "split" }; }
 
 expr
   = res:sum { return res; }
