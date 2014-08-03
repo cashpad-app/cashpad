@@ -82,6 +82,7 @@ transaction
       var o = {
         date : date,
         payers : p,
+        options: []
       };
       if (desc) {
         o.desc = desc.desc;
