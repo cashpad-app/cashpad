@@ -16,6 +16,7 @@
   ],
   "dependencies": {
     "abbrev-js": "isaacs/abbrev-js#~1.0.5",
-    "underscore": "~1.6.0"
+    "underscore": "~1.6.0",
+    "requirejs": "~2.1.14"
   }
 }
