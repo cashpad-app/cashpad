@@ -139,7 +139,7 @@ describe 'brain', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[7]
-      line.computed.given.balance.luca.should.equal 7
+      line.computed.given.luca.should.equal 7
       line.computed.given.gabriele.should.equal 15
       line.computed.given.daniele.should.equal 18
 
@@ -147,6 +147,6 @@ describe 'brain', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[7]
-      line.computed.spent.balance.luca.should.equal 10
+      line.computed.spent.luca.should.equal 10
       line.computed.spent.gabriele.should.equal 20
       line.computed.spent.daniele.should.equal 10
