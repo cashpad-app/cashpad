@@ -9,6 +9,7 @@
   "dependencies": {},
   "devDependencies": {
     "pegjs": "^0.8.0",
+    "requirejs": "^2.1.14",
     "should": "^4.0.4"
   },
   "scripts": {
