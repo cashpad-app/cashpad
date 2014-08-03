@@ -84,12 +84,22 @@ describe 'brain', ->
       line.beneficiaries.should.containDeep [name: 'gabriele']
       line.beneficiaries.should.containDeep [name: 'daniele']
 
+    it 'should have a null fixed amount when no amount is specified', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[4]
+      (line.beneficiaries.filter((b) -> b.name == 'luca')[0].fixedAmount == null).should.be.true
+
+    it 'should have a null fixed amount when a modifier is specified', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[4]
+      (line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].fixedAmount == null).should.be.true
+
     it 'should compute the fixed amount', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[4]
-      line.beneficiaries.filter((b) -> b.name == 'luca')[0].fixedAmount.should.equal 0
-      line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].fixedAmount.should.equal 0
       line.beneficiaries.filter((b) -> b.name == 'daniele')[0].fixedAmount.should.equal 10
       line.computing.totalFixedAmount.should.equal 10
 
@@ -117,7 +127,7 @@ describe 'brain', ->
       line = computedLines[7]
       line.computing.totalSpentAmount.should.equal 15 + 7 + 18
 
-    it 'should compute the owed amount', ->
+    it 'should compute the balance', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[7]
