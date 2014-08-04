@@ -31,12 +31,16 @@ html
           button#run.btn.btn-primary.btn-lg.btn-block compute!
 
         .col-md-6
-          h3 Totals
-          table#totals.table.table-striped.table-hover
+          #results.panel-group
+            .panel.panel-primary
+              .panel-heading
+                h3.panel-title Totals
+              .panel-body
+                table#totals.table.table-striped.table-hover
+                #totalsChart
 
-          #totalsChart
-
-          hr
-
-          h3 Partials
-          #partials
+            .panel.panel-info
+              .panel-heading
+                h3.panel-title Partials
+              .panel-body
+                #partials
