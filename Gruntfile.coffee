@@ -64,6 +64,7 @@ module.exports = (grunt) ->
         dest: 'dist/lib/syntax/parser.js'
         options:
           exportVar: 'parser'
+          trackLineAndColumn: 'true'
 
     file_append:
       default_options:
