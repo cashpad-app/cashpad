@@ -135,11 +135,10 @@ beneficiaries
   / "" { return []; }
 
 beneficiary
-  = n:name _ m:modifier a:expr {
+  = n:name _ m:modifier {
         return {
                name : n,
-               amount : a,
-               modifier : m
+               modifiers : m
         };
     } /
     n:name _ a:expr {
@@ -155,7 +154,17 @@ beneficiary
     }
 
 modifier
-  = "+" / "-" / "*"
+  = o:offset _ m:multiplier { return { offset: o, multiplier: m }; }
+  / m:multiplier _ o:offset { return { offset: o, multiplier: m }; }
+  / o:offset { return { offset: o }; }
+  / m:multiplier { return { multiplier: m }; }
+
+offset
+  = "+" a:expr { return a; }
+  / "-" a:expr { return -a; }
+
+multiplier
+  = "*" a:expr { return a; }
 
 options
   = opts:(_ o:option { return o; })* { return opts; }
