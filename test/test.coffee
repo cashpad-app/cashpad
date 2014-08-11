@@ -192,3 +192,11 @@ describe 'brain', ->
       line.beneficiaries.should.containDeep [name: 'daniele']
       line.payers.should.containDeep [name: 'gabriele']
 
+    it 'should ignore the case of people names', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[11]
+      names = []
+      for own name,bal of line.computed.balance
+        names.push name
+      names.should.have.length 2

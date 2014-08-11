@@ -9,5 +9,6 @@ dinner: gabriele 65 -> gabriele +5 daniele 10 luca -10
 dinner: gabriele 65 -> gabriele *2 daniele 10 luca
 dinner: gabriele 15 luca 7 daniele 18 -> gabriele *2 daniele 10 luca
 dinner: gabri 65 -> dani
-benza cremona: gabriele 20 -> luca
+gas: gabriele 20 -> luca
 ice cream: gabriele 15 -> luca 7 daniele
+gas: gabriele 10 -> Gabriele 4 luca
