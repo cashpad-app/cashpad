@@ -151,7 +151,18 @@ describe 'brain', ->
       line.computed.spent.gabriele.should.equal 20
       line.computed.spent.daniele.should.equal 10
 
-    it 'should allow for abbreviations', ->
+    it 'should compute the balance when a payer is not also a beneficiary', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[9]
+      line.beneficiaries.should.have.length 1
+      line.beneficiaries[0].should.containDeep name: 'luca'
+      line.payers.should.have.length 1
+      line.payers[0].should.containDeep name: 'gabriele'
+      line.computed.balance.should.containDeep luca: '-20'
+      line.computed.balance.should.containDeep gabriele: '20'
+
+    it.skip 'should allow for abbreviations', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[8]

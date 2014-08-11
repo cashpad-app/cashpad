@@ -9,14 +9,4 @@ dinner: gabriele 65 -> gabriele +5 daniele 10 luca -10
 dinner: gabriele 65 -> gabriele *2 daniele 10 luca
 dinner: gabriele 15 luca 7 daniele 18 -> gabriele *2 daniele 10 luca
 dinner: gabri 65 -> dani
-dinner: gabriele 65 -> gabriele +5 ...
-ice cream: daniele 11 -> luca 5 ...
-bar: daniele 42 -> luca 14 daniele 13 gabriele 9
-bar: daniele 42 -> luca 14 daniele 13 gabriele 9 $
-having fun without luca: gabriele 15 -> daniele +4 ...
-moar fun: daniele 13 -> daniele
-
-gabriele 150 -> luca
-daniele 100 -> luca
-
-bar #drinks: luca 20 -> luca
+benza cremona: gabriele 20 -> luca
