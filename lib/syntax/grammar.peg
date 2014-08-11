@@ -31,17 +31,17 @@ name
 
 lines
   = ll:line* {
-    return ll;
+    return ll.filter(function(l) { return l != null });
   }
 
 line
-  = SAMEDENT t:transaction EOL* {
+  = SAMEDENT t:transaction EOL* comment? EOL* {
     return t;
   }
   / SAMEDENT block_header EOL INDENT ll:line+ OUTDENT {
     return {block: true, lines: ll}
   }
-  / comment EOL+
+  / comment EOL* { return null; }
 
 block_header
   = command _? ("," _? command)*
@@ -80,7 +80,7 @@ transaction
       }
     )?
     _?
-    c:inline_comment? {
+    c:comment? {
       var o = {
         date : date,
         payers : p,
@@ -101,7 +101,7 @@ transaction
       return o;
     }
 
-inline_comment
+comment
   = "#" _? c:[^\n]* { return c.join("").trim(); }
 
 date
@@ -110,15 +110,12 @@ date
   }
 
 description
-  = w:(word / tag) others:(_ w_n:(word / tag) { return w_n; } )* {
-      var o = {};
-      var desc = w;
-      if(others.length > 0) {
-          desc = w + " " + others.join(" ");
-      }
-      o.desc = desc;
-      o.tags = desc.match(/#[^# ]+/g)
-      return o;
+  = w:[^:#]+ {
+      var desc = w.join("");
+      return {
+        desc: desc,
+        tags: desc.match(/#[^# ]+/g)
+      };
   }
 
 word
@@ -233,14 +230,6 @@ EOL
 NOT_EOL
   = EOL &{ return false }
   / . { return true }
-
-comment
-  = "//" NOT_EOL* {
-    return "line comment";
-  }
-  / "/*" [^*/]* "*/" {
-    return "comment";
-  }
 
 SAMEDENT
   = i:[ \t]* &{ return i.join("") === indent; }
