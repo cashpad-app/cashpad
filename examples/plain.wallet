@@ -15,3 +15,4 @@ gas: gabriele 10 -> Gabriele 4 luca
 dinner: daniele 96 -> gabriele -6
 dinner: daniele 96 -> gabriele -6 luca 3
 dinner: daniele 96 -> gabriele -6 luca
+dinner: daniele 96 -> gabriele 6 luca 19

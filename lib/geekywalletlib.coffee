@@ -6,9 +6,11 @@ define ->
       a + elem
     ), 0
 
-  Array::hasElementMatching = (fn = (x) -> x) ->
-    filtered = @filter ((item, i) -> fn item)
-    filtered.length > 0
+  if not Array.prototype.some
+    Array.prototype.some = (f) -> (x for x in @ when f(x)).length > 0
+
+  if not Array.prototype.every
+    Array.prototype.every = (f) -> (x for x in @ when f(x)).length == @length
 
   class Brain
 
@@ -74,20 +76,23 @@ define ->
       # add beneficiaries from context if none is defined
       unless line.beneficiaries?
         line.beneficiaries = line.context.people.map (name) -> {name: name}
-      # add remaining beneficiaries if option group is present
+      # add remaining beneficiaries if option group is present ...
       addMissingBeneficiaries = @getOption(line, "group")
+      # ... or if there are only offset and fixedamount and at least one offset
+      atLeastOneOffset = line.beneficiaries.some (ben) -> ben.modifiers?.offset? 
+      onlyOffsetAndFixedAmount = line.beneficiaries.every (ben) -> 
+        ben.fixedAmount? || ben.modifiers?.offset?
+      addMissingBeneficiaries ||= atLeastOneOffset and onlyOffsetAndFixedAmount
       if addMissingBeneficiaries
         missingBeneficiaries = line.context.people.filter (personName) =>
-          not line.beneficiaries.hasElementMatching (ben) -> ben.name == personName
+          not line.beneficiaries.some (ben) -> ben.name == personName
         line.beneficiaries.push {name: name} for name in missingBeneficiaries
       # set defaults for offset and multiplier
-      #console.log JSON.stringify line, "\n", 2
       line.beneficiaries = line.beneficiaries.map (ben) ->
         ben.modifiers ?= {}
         ben.modifiers.offset ?= 0
         ben.modifiers.multiplier ?= if ben.fixedAmount? then null else 1
         ben
-      #console.log JSON.stringify line, "\n", 2
 
     getOption: (line, optionName) =>
       line.options.filter((x) -> x.name == optionName)[0]

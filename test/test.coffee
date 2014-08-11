@@ -89,7 +89,7 @@ describe 'brain', ->
       line.beneficiaries.should.containDeep [name: 'gabriele']
       line.beneficiaries.should.containDeep [name: 'daniele']
 
-    it 'should inherit beneficiaries from the context when only offset are present', ->
+    it 'should inherit beneficiaries from the context when only offsets are present', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[12]
@@ -98,15 +98,33 @@ describe 'brain', ->
       line.beneficiaries.should.containDeep [name: 'gabriele']
       line.beneficiaries.should.containDeep [name: 'daniele']
 
-    it 'should not inherit beneficiaries from the context when a non-fixed amount it present', ->
+    it 'should inherit beneficiaries from the context when only offsets or fixed amounts are present', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[13]
+      line.beneficiaries.should.have.length 3
+      line.beneficiaries.should.containDeep [name: 'luca']
+      line.beneficiaries.should.containDeep [name: 'gabriele']
+      line.beneficiaries.should.containDeep [name: 'daniele']
+
+    it 'should not inherit beneficiaries from the context when a non-fixed amount it present', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[14]
       line.beneficiaries.should.have.length 2
       line.beneficiaries.should.containDeep [name: 'luca']
       line.beneficiaries.should.containDeep [name: 'gabriele']
       line.beneficiaries.should.not.containDeep [name: 'daniele']
 
+    it 'should not inherit beneficiaries from the context when only fixed amounts are present', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[15]
+      line.beneficiaries.should.have.length 2
+      line.beneficiaries.should.containDeep [name: 'luca']
+      line.beneficiaries.should.containDeep [name: 'gabriele']
+      line.beneficiaries.should.not.containDeep [name: 'daniele']
+      
     it 'should not have a fixed amount when no amount is specified', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
