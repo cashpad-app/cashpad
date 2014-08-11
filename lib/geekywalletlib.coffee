@@ -61,8 +61,9 @@ define ->
         line.computed.given[payer.name] = payer.amount
         line.computed.spent[payer.name] ?= 0
       # compute balance
-      line.computed.balance[person] = line.computed.given[person] - line.computed.spent[person] for own person, val of line.computed.spent
-
+      for own person, val of line.computed.spent 
+        do (person) => 
+          line.computed.balance[person] = line.computed.given[person] - line.computed.spent[person]
       # return line object
       line
 
