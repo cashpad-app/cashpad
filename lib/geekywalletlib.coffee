@@ -1,7 +1,10 @@
 define ->
 
   Array::sum = (fn = (x) -> x) ->
-    @reduce ((a, b) -> a + fn b), 0
+    @reduce ((a, b) ->
+      elem = fn(b) || 0
+      a + elem
+    ), 0
 
   Array::hasElementMatching = (fn = (x) -> x) ->
     filtered = @filter ((item, i) -> fn item)
