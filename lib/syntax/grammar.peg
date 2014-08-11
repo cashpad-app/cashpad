@@ -78,7 +78,8 @@ transaction
       opts:options {
         return [bb, opts, arrow];
       }
-    )? {
+    )?
+    _? {
       var o = {
         date : date,
         payers : p,
