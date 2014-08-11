@@ -144,7 +144,7 @@ beneficiary
     n:name _ a:expr {
         return {
                name : n,
-               amount : a,
+               fixedAmount : a,
         };
     } /
     n:name {

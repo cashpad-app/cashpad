@@ -35,14 +35,14 @@ define ->
       # intermediate computation steps
       totalSpentAmount = line.payers.sum (x) -> x.amount
       totalFixedAmount = line.beneficiaries.sum (x) -> x.fixedAmount
-      totalOffset = line.beneficiaries.sum (x) -> x.offset
-      totalMultiply = line.beneficiaries.sum (x) -> x.multiply
+      totalOffset = line.beneficiaries.sum (x) -> x.modifiers.offset
+      totalMultiplier = line.beneficiaries.sum (x) -> x.modifiers.multiplier
       amountToDivide = totalSpentAmount - totalFixedAmount - totalOffset
-      amountForEachOne = amountToDivide / totalMultiply
+      amountForEachOne = amountToDivide / totalMultiplier
       line.computing =
         totalSpentAmount: totalSpentAmount
         totalOffset: totalOffset
-        totalMultiply: totalMultiply
+        totalMultiplier: totalMultiplier
         totalFixedAmount: totalFixedAmount
         amountToDivide: amountToDivide
         amountForEachOne: amountForEachOne
@@ -56,7 +56,7 @@ define ->
         line.computed.spent[ben.name] = if ben.fixedAmount
           ben.fixedAmount
         else
-          amountForEachOne * ben.multiply + ben.offset
+          amountForEachOne * ben.modifiers.multiplier + ben.modifiers.offset
         # set given to 0 as default for beneficiaries
         line.computed.given[ben.name] = 0
       # given
@@ -74,26 +74,20 @@ define ->
       # add beneficiaries from context if none is defined
       unless line.beneficiaries?
         line.beneficiaries = line.context.people.map (name) -> {name: name}
-      # add remaining beneficiaries if option "group" is present
-      if @getOption(line, "group")
+      # add remaining beneficiaries if option group is present
+      addMissingBeneficiaries = @getOption(line, "group")
+      if addMissingBeneficiaries
         missingBeneficiaries = line.context.people.filter (personName) =>
           not line.beneficiaries.hasElementMatching (ben) -> ben.name == personName
         line.beneficiaries.push {name: name} for name in missingBeneficiaries
-      # compute fixed amount, offset and multiply
+      # set defaults for offset and multiplier
+      #console.log JSON.stringify line, "\n", 2
       line.beneficiaries = line.beneficiaries.map (ben) ->
-        ben.fixedAmount = null
-        ben.offset = 0
-        ben.multiply = 1
-        if ben.amount?
-          if ben.modifier?
-            ben.offset = ben.amount if ben.modifier == '+'
-            ben.offset = -ben.amount if ben.modifier == '-'
-            ben.multiply = ben.amount if ben.modifier == '*'
-          else
-            ben.fixedAmount = ben.amount
-            ben.multiply = null
-            ben.offset = null
+        ben.modifiers ?= {}
+        ben.modifiers.offset ?= 0
+        ben.modifiers.multiplier ?= if ben.fixedAmount? then null else 1
         ben
+      #console.log JSON.stringify line, "\n", 2
 
     getOption: (line, optionName) =>
       line.options.filter((x) -> x.name == optionName)[0]

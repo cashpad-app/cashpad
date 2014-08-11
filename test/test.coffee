@@ -107,17 +107,17 @@ describe 'brain', ->
       line.beneficiaries.should.containDeep [name: 'gabriele']
       line.beneficiaries.should.not.containDeep [name: 'daniele']
 
-    it 'should have a null fixed amount when no amount is specified', ->
+    it 'should not have a fixed amount when no amount is specified', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[4]
-      (line.beneficiaries.filter((b) -> b.name == 'luca')[0].fixedAmount == null).should.be.true
+      (line.beneficiaries.filter((b) -> b.name == 'luca')[0].fixedAmount?).should.be.false
 
-    it 'should have a null fixed amount when a modifier is specified', ->
+    it 'should not have a fixed amount when a modifier is specified', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[4]
-      (line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].fixedAmount == null).should.be.true
+      (line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].fixedAmount?).should.be.false
 
     it 'should compute the fixed amount', ->
       result = parser.parse wallet
@@ -130,19 +130,19 @@ describe 'brain', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[5]
-      line.beneficiaries.filter((b) -> b.name == 'luca')[0].offset.should.equal -10
-      line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].offset.should.equal 5
-      (line.beneficiaries.filter((b) -> b.name == 'daniele')[0].offset == null).should.be.true
+      line.beneficiaries.filter((b) -> b.name == 'luca')[0].modifiers.offset.should.equal -10
+      line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].modifiers.offset.should.equal 5
+      line.beneficiaries.filter((b) -> b.name == 'daniele')[0].modifiers.offset.should.equal 0
       line.computing.totalOffset.should.equal -5
 
     it 'should compute the multiplier', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[6]
-      line.beneficiaries.filter((b) -> b.name == 'luca')[0].multiply.should.equal 1
-      line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].multiply.should.equal 2
-      (line.beneficiaries.filter((b) -> b.name == 'daniele')[0].multiply == null).should.be.true
-      line.computing.totalMultiply.should.equal 3 # only people with a non-fixed amount are considered
+      line.beneficiaries.filter((b) -> b.name == 'luca')[0].modifiers.multiplier.should.equal 1
+      line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].modifiers.multiplier.should.equal 2
+      (line.beneficiaries.filter((b) -> b.name == 'daniele')[0].modifiers.multiplier?).should.be.false 
+      line.computing.totalMultiplier.should.equal 3 # only people with a non-fixed amount are considered
 
     it 'should compute the total spent amount', ->
       result = parser.parse wallet
