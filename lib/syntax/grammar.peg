@@ -26,7 +26,7 @@ people_list
 
 name
   = name:[a-zA-Z]+ {
-    return name.join("");
+    return name.join("").toLowerCase();
   }
 
 lines
