@@ -10,6 +10,11 @@ parser = peg.buildParser fs.readFileSync 'lib/syntax/grammar.peg', 'utf8'
 wallet = fs.readFileSync 'examples/plain.wallet', 'utf8'
 lines = null
 
+Array::unique = ->
+  output = {}
+  output[@[key]] = @[key] for key in [0...@length]
+  value for key, value of output
+
 describe 'peg parser', ->
   it 'should parse a plain wallet file', ->
     result = parser.parse wallet
@@ -162,6 +167,22 @@ describe 'brain', ->
       line.computed.balance.should.containDeep luca: '-20'
       line.computed.balance.should.containDeep gabriele: '20'
 
+    it 'should contain both payers and beneficiaries in computed.balance', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[10]
+      bens = []
+      payers = []
+      names = []
+      for ben in line.beneficiaries
+        bens.push ben.name
+      for pp in line.payers
+        payers.push pp.name
+      for own name,bal of line.computed.balance
+        names.push name
+      expectedNames = payers.concat(bens).unique()
+      names.sort().should.eql expectedNames.sort()
+
     it.skip 'should allow for abbreviations', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
@@ -170,3 +191,4 @@ describe 'brain', ->
       line.payers.should.have.length 1
       line.beneficiaries.should.containDeep [name: 'daniele']
       line.payers.should.containDeep [name: 'gabriele']
+
