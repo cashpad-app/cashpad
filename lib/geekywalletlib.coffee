@@ -59,9 +59,9 @@ define ->
       # given
       line.payers.map (payer) ->
         line.computed.given[payer.name] = payer.amount
+        line.computed.spent[payer.name] ?= 0
       # compute balance
-      line.beneficiaries.map (ben) ->
-        line.computed.balance[ben.name] = line.computed.given[ben.name] - line.computed.spent[ben.name]
+      line.computed.balance[person] = line.computed.given[person] - line.computed.spent[person] for own person, val of line.computed.spent
 
       # return line object
       line
