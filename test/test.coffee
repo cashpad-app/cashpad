@@ -52,6 +52,10 @@ describe 'peg parser', ->
       line = lines[0]
       line.reversed.should.be.false
 
+    it 'should parse inline comments', ->
+      line = lines[0]
+      line.comment.should.equal 'a comment'
+
 describe 'brain', ->
   describe 'simple line', ->
     it 'should inherit people from the context', ->

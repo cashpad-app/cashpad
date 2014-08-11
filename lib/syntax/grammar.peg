@@ -79,7 +79,8 @@ transaction
         return [bb, opts, arrow];
       }
     )?
-    _? {
+    _?
+    c:inline_comment? {
       var o = {
         date : date,
         payers : p,
@@ -94,8 +95,14 @@ transaction
         o.options = bs[1];
         o.reversed = bs[2] !== "->";
       }
+      if (c) {
+        o.comment = c;
+      }
       return o;
     }
+
+inline_comment
+  = "#" _? c:[^\n]* { return c.join("").trim(); }
 
 date
   = year:([0-9][0-9][0-9][0-9]?)"-"month:([0-9][0-9])"-"day:([0-9][0-9]) {
