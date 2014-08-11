@@ -1,6 +1,5 @@
 {
   var indentStack = [], indent = "";
-  var line = 1;
 }
 
 start
@@ -84,7 +83,8 @@ transaction
       var o = {
         date : date,
         payers : p,
-        options: []
+        options: [],
+        line: line()
       };
       if (desc) {
         o.desc = desc.desc;
@@ -223,9 +223,7 @@ whitespace
   = " " / "\t"
 
 EOL
-  = "\r\n" / "\n" / "\r" {
-    line++;
-  }
+  = "\r\n" / "\n" / "\r"
 
 NOT_EOL
   = EOL &{ return false }
