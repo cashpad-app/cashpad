@@ -34,6 +34,8 @@ define ->
     computeLine: (line) =>
       # preprocessing tasks..
       @preprocessLine(line)
+      #validation tasks..
+      @validateLine(line)
       # intermediate computation steps
       totalSpentAmount = line.payers.sum (x) -> x.amount
       totalFixedAmount = line.beneficiaries.sum (x) -> x.fixedAmount
@@ -93,6 +95,17 @@ define ->
         ben.modifiers.offset ?= 0
         ben.modifiers.multiplier ?= if ben.fixedAmount? then null else 1
         ben
+
+    validateLine: (line) =>
+      line.errors = line.errors || []
+      # throw an error if a non existing beneficiary or payer is found
+      alienBeneficiaries = line.beneficiaries.filter (ben) ->
+        not line.context.people.some (personName) -> personName == ben.name
+      alienPayers = line.payers.filter (payer) ->
+        not line.context.people.some (personName) -> personName == payer.name
+      alienPersons = (alienBeneficiaries.concat alienPayers).map (p) -> p.name
+      if alienPersons.length > 0
+        line.errors.push('#{alienPersons.join(", ")} are not present in the current context')
 
     getOption: (line, optionName) =>
       line.options.filter((x) -> x.name == optionName)[0]
