@@ -23,14 +23,14 @@ describe 'peg parser', ->
 
 describe 'brain', ->
   describe 'nested line', ->
-    it.skip 'should not inherit beneficiaries of the nested context', ->
+    it 'should not inherit beneficiaries of the nested context', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[0]
       line.beneficiaries.should.have.length 1
       line.beneficiaries.should.containDeep [name: 'gabro']
 
-    it.skip 'should inherit beneficiaries from the nested context', ->
+    it 'should inherit beneficiaries from the nested context', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[1]

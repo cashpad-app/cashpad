@@ -15,20 +15,27 @@ define ->
   class Brain
 
     computeFromParsed: (parsed) =>
-      @flatListOfLines = @getFlatListOfLines(parsed.group)
+      @flatListOfLines = @getFlatListOfLines(parsed.group.lines, parsed.group.context)
       @computed = @flatListOfLines.map (line) => @computeLine(line)
       @computed
 
     # flatten context into each line
     # TODO take care of abbreviations
-    getFlatListOfLines: (group) =>
-      group.lines.map (line) ->
-        if line.context? # line is actually a group...
-          console.log "TODO manage nested context"
+    getFlatListOfLines: (lines, context) =>
+      lines.reduce ((flatList, line) =>
+        if line.group? # line is actually a group...
+          nestedFlatList = @getFlatListOfLines(line.group.lines, @mergeContext(context, line.group.context))
+          flatList = flatList.concat nestedFlatList
         else
           line.context = {}
-          line.context.people = group.context.people
-        line
+          line.context.people = context.people
+          flatList.push line
+        flatList
+      ), []
+
+    # merge context for nexted groups
+    mergeContext: (parentContext, childContext) ->
+      childContext
 
     # compute balance, spent and given for each line
     computeLine: (line) =>

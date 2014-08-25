@@ -1,7 +1,5 @@
 @people gabro
-
 ice cream: gabro 20
-grocery: luca 120 dani 12
+
 @people gabro dani
   ice cream: gabro 20
-  movie tickets: dani 15 -> gabro *2 dani
