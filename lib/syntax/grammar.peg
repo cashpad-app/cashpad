@@ -1,5 +1,19 @@
 {
   var indentStack = [], indent = "";
+
+  var flatten = function (arr) {
+    var o = {};
+    for (var i = 0; i < arr.length; i++) {
+      var obj = arr[i];
+      for (var prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+          o[prop] = obj[prop];
+        }
+      }
+    }
+    return o;
+  }
+
 }
 
 start
@@ -13,14 +27,38 @@ start
     }
 
 header
-  = people
+  = group_header
 
-people
+group_header
+  = c:command _? cc:("," _? c:command { return c; })* {
+      cc.unshift(c);
+      return flatten(cc);
+    }
+
+command
+  = pp:people_command { return { people: pp }; }
+  / dd:date_command { return { date: dd }; }
+  / tt:tag_command { return { tags: tt }; }
+  / cc:currency_command { return { currency: cc }; }
+
+people_command
   = "@people" pl:people_list { return pl; }
+
+date_command
+  = "@date" _ d:date
+
+tag_command
+  = "@tag" tl:tag_list { return tl; }
+
+tag_list
+  = (_ t:tag { return t; })+
+
+currency_command
+  = "@currency" _ n:number
 
 people_list
   = pp:(_ p:name {return p;})+ {
-    return {people: pp}
+    return pp;
   }
 
 name
@@ -37,34 +75,13 @@ line
   = SAMEDENT t:transaction EOL* comment? EOL* {
     return t;
   }
-  / SAMEDENT block_header EOL INDENT ll:line+ OUTDENT {
-    return {block: true, lines: ll}
+  / t:transaction EOL* comment? EOL* {
+    return t;
+  }
+  / SAMEDENT gh:group_header EOL INDENT ll:line+ OUTDENT {
+    return {group: { context: gh, lines:ll }};
   }
   / comment EOL* { return null; }
-
-block_header
-  = command _? ("," _? command)*
-
-command
-  = group_command
-  / date_command
-  / tag_command
-  / currency_command
-
-group_command
-  = "@group" pl:people_list
-
-date_command
-  = "@date" _ d:date
-
-tag_command
-  = "@tag" tl:tag_list
-
-tag_list
-  = (_ tag)+
-
-currency_command
-  = "@currency" _ n:number
 
 transaction
   = date:(d:date _ {return d;})?
@@ -110,7 +127,7 @@ date
   }
 
 description
-  = w:[^:#]+ {
+  = w:[^:#@]+ {
       var desc = w.join("");
       return {
         desc: desc,
@@ -230,10 +247,10 @@ NOT_EOL
   / . { return true }
 
 SAMEDENT
-  = i:[ \t]* &{ return i.join("") === indent; }
+  = i:whitespace* &{ return i.join("") === indent; }
 
 INDENT
-  = i:[ \t]+ &{ return i.length > indent.length; }
+  = i:whitespace+ &{ return i.length > indent.length; }
     { indentStack.push(indent); indent = i.join(""); pos = offset; }
 
 OUTDENT
