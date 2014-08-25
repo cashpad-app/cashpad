@@ -1,6 +1,7 @@
-@people gabro dani luca
+@people gabro
 
+ice cream: gabro 20
 grocery: luca 120 dani 12
-@people gabro dani luca andre
-  ice cream: dani 20 -> luca 11 ...
-  movie tickets: luca 15 -> luca *2 dani
+@people gabro dani
+  ice cream: gabro 20
+  movie tickets: dani 15 -> gabro *2 dani
