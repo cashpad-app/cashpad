@@ -1,7 +1,10 @@
 @people luca gabriele daniele
 
-// 0. people not in current group
+// 0. beneficiary not in current group
 bar: gabriele 20 -> marco luca
 
-// 1. wrong sum (recovery: use '...' or '$')
+// 1. payer not in current group
+bar: gianni 20 -> gabriele luca
+
+// 2. wrong sum (recovery: use '...' or '$')
 bar: gabro 20 -> luca 10 daniele 5

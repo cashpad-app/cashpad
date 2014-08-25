@@ -13,12 +13,17 @@ computedLines = brain.computeFromParsed lines
 
 describe 'brain (errors)', ->
 
-  it.skip 'should produce an error when a person is not in the current group', ->
+  it 'should produce an error when a beneficiary is not in the current group', ->
     line = computedLines[0]
     (line.errors?).should.be.true
     line.errors.should.have.length 1
 
-  it.skip 'should produce an error when the sum is wrong', ->
+  it 'should produce an error when a payer is not in the current group', ->
     line = computedLines[1]
+    (line.errors?).should.be.true
+    line.errors.should.have.length 1
+
+  it.skip 'should produce an error when the sum is wrong', ->
+    line = computedLines[2]
     (line.errors?).should.be.true
     line.errors.should.have.length 1
