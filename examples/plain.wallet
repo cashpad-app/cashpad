@@ -1,6 +1,6 @@
 @people luca gabriele daniele
 
-2014-04-12 plane ticket: luca 450 -> luca gabriele daniele # a comment
+2014-04-12 plane ticket: luca 450 -> luca gabriele daniele // a comment
 hotel: luca 200
 ice cream: gabriele 12 -> luca gabriele
 ice cream: gabriele 12 -> luca gabriele ...
@@ -13,7 +13,7 @@ gas: gabriele 20 -> luca
 ice cream: gabriele 15 -> luca 7 daniele
 gas: gabriele 10 -> Gabriele 4 luca
 
-# testing ... inference logic
+// testing ... inference logic
 dinner: daniele 96 -> gabriele -6
 dinner: daniele 96 -> gabriele -6 luca 3
 dinner: daniele 96 -> gabriele -6 luca
