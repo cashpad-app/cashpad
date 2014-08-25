@@ -18,7 +18,7 @@ describe 'brain (errors)', ->
     (line.errors?).should.be.true
     line.errors.should.have.length 1
     line.errors[0].code.should.eql 'ALIEN_PERSON_ERROR',
-    line.errors[0].message.should.contain 'marco'
+    (line.errors[0].message.indexOf('marco') == -1).should.be.false
 
   it 'should produce an error when a payer is not in the current group', ->
     line = computedLines[1]

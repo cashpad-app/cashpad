@@ -61,7 +61,7 @@ define ->
     computeLine: (line) =>
       # preprocessing tasks..
       @preprocessLine(line)
-      #validation tasks..
+      # validation tasks..
       @validateLine(line)
       # intermediate computation steps
       totalSpentAmount = line.payers.sum (x) -> x.amount
@@ -124,7 +124,8 @@ define ->
         ben
 
     validateLine: (line) =>
-      line.errors = line.errors || []
+      line.errors ?= []
+      line.warnings ?= []
       # throw an error if a non existing beneficiary or payer is found
       alienBeneficiaries = line.beneficiaries.filter (ben) ->
         not line.context.people.some (personName) -> personName == ben.name
@@ -132,7 +133,12 @@ define ->
         not line.context.people.some (personName) -> personName == payer.name
       alienPersons = (alienBeneficiaries.concat alienPayers).map (p) -> p.name
       if alienPersons.length > 0
-        line.errors.push('#{alienPersons.join(", ")} are not present in the current context')
+        verb = if alienPersons.length > 1 then 'are' else 'is'
+        line.errors.push 
+          code: "ALIEN_PERSON_ERROR"
+          message: "#{alienPersons.join(", ")} #{verb} not present in the current context"
+          recoverySuggestions: "you should add the missing persons with a @people command. " +
+            "You can edit the current people group with @people #{alienPersons.map((name) -> "+#{name}").join(" ")} "
 
     getOption: (line, optionName) =>
       line.options.filter((x) -> x.name == optionName)[0]
