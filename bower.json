@@ -14,6 +14,10 @@
     "test",
     "tests"
   ],
+  "main": [
+    "dist/lib/syntax/parser.js",
+    "dist/lib.js"
+  ],
   "dependencies": {
     "abbrev-js": "isaacs/abbrev-js#~1.0.5",
     "underscore": "~1.6.0",
