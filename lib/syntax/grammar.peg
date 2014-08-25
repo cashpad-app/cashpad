@@ -36,13 +36,14 @@ group_header
     }
 
 command
-  = pp:people_command { return { people: pp }; }
+  = pp:people_command { return pp; }
   / dd:date_command { return { date: dd }; }
   / tt:tag_command { return { tags: tt }; }
   / cc:currency_command { return { currency: cc }; }
 
 people_command
-  = "@people" pl:people_list { return pl; }
+  = "@people" pl:people_list { return { people: pl }; }
+  / "@people" pm:people_modifiers { return { people_delta: pm }; }
 
 date_command
   = "@date" _ d:date
@@ -60,6 +61,11 @@ people_list
   = pp:(_ p:name {return p;})+ {
     return pp;
   }
+
+people_modifiers
+  = pp:(_ m:mod n:name { return { mod: m, name: n }; })+
+
+mod = "+" / "-"
 
 name
   = name:[a-zA-Z]+ {
