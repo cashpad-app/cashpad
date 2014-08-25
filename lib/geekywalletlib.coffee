@@ -142,8 +142,3 @@ define ->
 
     getOption: (line, optionName) =>
       line.options.filter((x) -> x.name == optionName)[0]
-
-  if window?
-    window.GeekyWallet = new Brain
-
-  Brain

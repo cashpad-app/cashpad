@@ -4,6 +4,7 @@ test/*.js
 grammar.js
 bower_components/
 dist/
+.tmp
 
 # Created by http://www.gitignore.io
 

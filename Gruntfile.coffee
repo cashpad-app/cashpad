@@ -26,11 +26,22 @@ module.exports = (grunt) ->
           'test/test.js': 'test/*.coffee'
       bower:
         files:
-          'dist/lib.js': ['lib/geekywalletlib.coffee']
+          '.tmp/concat/lib.js': ['lib/geekywalletlib.coffee']
       app:
         files:
           'dist/app.js': 'app/app.coffee'
           'dist/wallet.js': 'app/scripts/**/*.coffee'
+
+    concat:
+      options:
+        banner: grunt.file.read 'dist-banner'
+        footer: grunt.file.read 'dist-footer'
+      bower:
+        src: [
+          '.tmp/concat/parser.js',
+          '.tmp/concat/lib.js'
+        ],
+        dest: 'dist/geekywallet.js'
 
     jade:
       app:
@@ -67,6 +78,11 @@ module.exports = (grunt) ->
         dest: 'dist/lib/syntax/parser.js'
         options:
           exportVar: 'parser'
+      bower:
+        src: 'lib/syntax/grammar.peg'
+        dest: '.tmp/concat/parser.js'
+        options:
+          exportVar: 'parser'
 
     file_append:
       default_options:
@@ -93,8 +109,11 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-contrib-connect'
   grunt.loadNpmTasks 'grunt-contrib-copy'
+  grunt.loadNpmTasks 'grunt-contrib-concat'
 
   grunt.registerTask 'test', ['coffee:test', 'coffee:lib', 'mochaTest']
-  grunt.registerTask 'build', ['clean', 'coffee:bower', 'peg', 'file_append']
+  grunt.registerTask 'build', ['clean', 'coffee:bower', 'peg', 'concat:bower']
   grunt.registerTask 'app', ['clean', 'copy:bower', 'coffee:lib', 'coffee:app', 'jade:app', 'peg', 'file_append']
   grunt.registerTask 'serve', ['app', 'connect', 'watch:app']
+
+  grunt.registerTask 'default', 'build'

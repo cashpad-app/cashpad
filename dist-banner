@@ -1,0 +1,4 @@
+(function(){
+var define = function(definition) {
+  window.geekywallet =  new (definition())();
+};
