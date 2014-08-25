@@ -8,7 +8,7 @@ brain = new (requirejs 'dist/lib/geekywalletlib.js')
 
 grammar = fs.readFileSync 'lib/syntax/grammar.peg', 'utf8'
 parser = peg.buildParser grammar
-wallet = fs.readFileSync 'examples/plain.wallet', 'utf8'
+wallet = fs.readFileSync 'examples/nested.wallet', 'utf8'
 lines = null
 
 describe 'peg parser', ->
