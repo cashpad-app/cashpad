@@ -17,13 +17,8 @@ module.exports = (grunt) ->
         files:
           'test/test.js': 'test/*.coffee'
       lib:
-        files: [
-          expand: true
-          src: '**/*.coffee'
-          dest: 'dist/lib'
-          cwd: 'lib'
-          ext: '.js'
-        ]
+        files:
+          'dist/lib.js': ['lib/geekywalletlib.coffee']
       app:
         files:
           'dist/app.js': 'app/app.coffee'
@@ -92,5 +87,5 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-copy'
 
   grunt.registerTask 'test', ['coffee:test', 'coffee:lib', 'mochaTest']
-  grunt.registerTask 'build', ['clean', 'copy:bower', 'coffee:lib', 'coffee:app', 'jade:app', 'peg', 'file_append']
+  grunt.registerTask 'build', ['clean', 'coffee:lib', 'peg', 'file_append']
   grunt.registerTask 'serve', ['build', 'connect', 'watch:app']

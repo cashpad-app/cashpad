@@ -95,8 +95,8 @@ define ->
         line.computed.given[payer.name] = payer.amount
         line.computed.spent[payer.name] ?= 0
       # compute balance
-      for own person, val of line.computed.spent 
-        do (person) => 
+      for own person, val of line.computed.spent
+        do (person) =>
           line.computed.balance[person] = line.computed.given[person] - line.computed.spent[person]
       # return line object
       line
@@ -108,8 +108,8 @@ define ->
       # add remaining beneficiaries if option group is present ...
       addMissingBeneficiaries = @getOption(line, "group")
       # ... or if there are only offset and fixedamount and at least one offset
-      atLeastOneOffset = line.beneficiaries.some (ben) -> ben.modifiers?.offset? 
-      onlyOffsetAndFixedAmount = line.beneficiaries.every (ben) -> 
+      atLeastOneOffset = line.beneficiaries.some (ben) -> ben.modifiers?.offset?
+      onlyOffsetAndFixedAmount = line.beneficiaries.every (ben) ->
         ben.fixedAmount? || ben.modifiers?.offset?
       addMissingBeneficiaries ||= atLeastOneOffset and onlyOffsetAndFixedAmount
       if addMissingBeneficiaries
@@ -134,7 +134,7 @@ define ->
       alienPersons = (alienBeneficiaries.concat alienPayers).map (p) -> p.name
       if alienPersons.length > 0
         verb = if alienPersons.length > 1 then 'are' else 'is'
-        line.errors.push 
+        line.errors.push
           code: "ALIEN_PERSON_ERROR"
           message: "#{alienPersons.join(", ")} #{verb} not present in the current context"
           recoverySuggestions: "you should add the missing persons with a @people command. " +
@@ -143,4 +143,4 @@ define ->
     getOption: (line, optionName) =>
       line.options.filter((x) -> x.name == optionName)[0]
 
-
+  window.GeekyWallet = new Brain
