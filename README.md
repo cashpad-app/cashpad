@@ -6,7 +6,7 @@ keep track of personal and group expenses, geeky style
 
 Luca, Gabriele and Daniele go together in vacation in Milan for a few days..
 
-    @people: luca gabriele daniele
+    @people luca gabriele daniele
 
 First, they buy their plane tickets, which cost 150$. Luca pays for everyone
    
@@ -44,15 +44,15 @@ It's a new day, how about remembering the date of this breakfast?
 
 Actually that wasn't the only expense of the day, how about grouping them?
 
-    @date: 2014-07-30
+    @date 2014-07-30
       breakfast: luca 10
       coffee: daniele 7 -> gabriele daniele
       skydiving: daniele 120 -> luca gabriele
 
 The next day luca is wandering off by himself...
 
-    @date: 2014-07-31 
-    @people: -luca
+    @date 2014-07-31 
+    @people -luca
       having fun without luca: gabriele 15 -> daniele +4 ...
       moar fun: daniele 13
 
@@ -65,7 +65,7 @@ It's the twitter era, who's up for some hashtags?
 
     bar #drinks: luca 20
     
-    @tag: #birthdayparty
+    @tags #birthdayparty
       booze: daniele 30 -> luca 0
       bitches: daniele 120 -> daniele // WAIT, WAT?!
 
@@ -85,10 +85,10 @@ for the brave of hearts..
 
   or create a group just for you, and probably put it in a separate file to be included
   
-      @people: luca
+      @people luca
         pizza: luca 12
       
 - include multiple wallets
     
-        @include: summer2014.wallet
-        @include: http://mywebsite.com/summer2014.wallet    
+        @include summer2014.wallet
+        @include http://mywebsite.com/summer2014.wallet    
