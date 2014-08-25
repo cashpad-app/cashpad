@@ -17,11 +17,15 @@ describe 'brain (errors)', ->
     line = computedLines[0]
     (line.errors?).should.be.true
     line.errors.should.have.length 1
+    line.errors[0].code.should.eql 'ALIEN_PERSON_ERROR',
+    line.errors[0].message.should.contain 'marco'
 
   it 'should produce an error when a payer is not in the current group', ->
     line = computedLines[1]
     (line.errors?).should.be.true
     line.errors.should.have.length 1
+    line.errors[0].code.should.eql 'ALIEN_PERSON_ERROR',
+    (line.errors[0].message.indexOf('gianni') == -1).should.be.false
 
   it.skip 'should produce an error when the sum is wrong', ->
     line = computedLines[2]
