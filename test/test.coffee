@@ -56,6 +56,11 @@ describe 'peg parser', ->
       line = lines[0]
       line.comment.should.equal 'a comment'
 
+    it 'should parse -> ...', ->
+      line = lines[16]
+      line.payers.should.containEql name: 'daniele', amount: 96
+      line.beneficiaries.should.be.empty
+
 describe 'brain', ->
   describe 'simple line', ->
     it 'should inherit people from the context', ->
