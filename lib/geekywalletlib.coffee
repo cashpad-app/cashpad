@@ -35,7 +35,27 @@ define ->
 
     # merge context for nexted groups
     mergeContext: (parentContext, childContext) ->
-      childContext
+      context = {}
+      # merge people
+      if childContext.people?
+        context.people = childContext.people
+      else if childContext.people_delta?
+        context.people = [].concat parentContext.people # makes copy of list
+        for person in childContext.people_delta
+          do =>
+            if person.mod == '+'
+              if parentContext.people.some((name) => name == person.name)
+                # todo generate warning
+              else
+                context.people.push person.name
+            else if person.mod == '-'
+              if parentContext.people.some((name) => name == person.name)
+                context.people = context.people.filter (name) => name != person.name
+              else
+                # todo generate warning
+      context
+
+
 
     # compute balance, spent and given for each line
     computeLine: (line) =>

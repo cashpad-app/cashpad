@@ -43,6 +43,6 @@ describe 'brain', ->
       computedLines = brain.computeFromParsed result
       line = computedLines[2]
       line.context.people.should.have.length 2
-      line.context.should.containEql 'luca'
-      line.context.should.containEql 'daniele'
-      line.context.should.not.containEql 'gabro'
+      line.context.people.should.containEql 'luca'
+      line.context.people.should.containEql 'dani'
+      line.context.people.should.not.containEql 'gabro'
