@@ -228,7 +228,7 @@ describe 'brain', ->
       expectedNames = payers.concat(bens).unique()
       names.sort().should.eql expectedNames.sort()
 
-    it.skip 'should allow for abbreviations', ->
+    it 'should allow for abbreviations', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[8]

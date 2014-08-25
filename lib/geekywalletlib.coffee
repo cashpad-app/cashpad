@@ -112,6 +112,11 @@ define ->
       line
 
     preprocessLine: (line) =>
+      # complete payers' and bens' names if abbreviated using current context
+      abbreviations = @abbrev line.context.people
+      payer.name = abbreviations[payer.name] || payer.name for payer in line.payers
+      if line.beneficiaries?
+        ben.name = abbreviations[ben.name] || ben.name for ben in line.beneficiaries
       # add beneficiaries from context if none is defined
       unless line.beneficiaries?
         line.beneficiaries = line.context.people.map (name) -> {name: name}
@@ -152,3 +157,43 @@ define ->
 
     getOption: (line, optionName) =>
       line.options.filter((x) -> x.name == optionName)[0]
+
+    abbrev: (list) =>
+      # sort them lexicographically, so that they're next to their nearest kin
+      list = list.sort (a, b) -> (if a is b then 0 else (if a > b then 1 else -1))
+      
+      # walk through each, seeing how much it has in common with the next and previous
+      abbrevs = {}
+      prev = ""
+      i = 0
+      l = list.length
+
+      while i < l
+        current = list[i]
+        next = list[i + 1] or ""
+        nextMatches = true
+        prevMatches = true
+        continue  if current is next
+        j = 0
+        cl = current.length
+
+        while j < cl
+          curChar = current.charAt(j)
+          nextMatches = nextMatches and curChar is next.charAt(j)
+          prevMatches = prevMatches and curChar is prev.charAt(j)
+          if not nextMatches and not prevMatches
+            j++
+            break
+          j++
+        prev = current
+        if j is cl
+          abbrevs[current] = current
+          continue
+        a = current.substr(0, j)
+
+        while j <= cl
+          abbrevs[a] = current
+          a += current.charAt(j)
+          j++
+        i++
+      abbrevs
