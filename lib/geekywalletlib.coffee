@@ -98,6 +98,16 @@ define ->
       for own person, val of line.computed.spent
         do (person) =>
           line.computed.balance[person] = line.computed.given[person] - line.computed.spent[person]
+      # validation
+      bensTotalSpentAmount = 0
+      for own person, val of line.computed.spent
+        do => bensTotalSpentAmount += val
+      if bensTotalSpentAmount != totalSpentAmount
+        line.errors.push
+          code: "PAYED_AMOUNT_NOT_MATCHING_ERROR"
+          message: "total spent amunt computed doesn't sum up to what was spent"
+          recoverySuggestions: "either edit the spent amounts or distribute the remainder among" +
+            "others in the current people group using '...'. If you forgot taxes or tip use '$'"
       # return line object
       line
 

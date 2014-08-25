@@ -27,7 +27,10 @@ describe 'brain (errors)', ->
     line.errors[0].code.should.eql 'ALIEN_PERSON_ERROR',
     (line.errors[0].message.indexOf('gianni') == -1).should.be.false
 
-  it.skip 'should produce an error when the sum is wrong', ->
+  it 'should produce an error when the sum is wrong', ->
     line = computedLines[2]
     (line.errors?).should.be.true
     line.errors.should.have.length 1
+    line.errors[0].code.should.eql 'PAYED_AMOUNT_NOT_MATCHING_ERROR',
+    (line.errors[0].message.indexOf('spent') == -1).should.be.false
+
