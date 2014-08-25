@@ -3,3 +3,6 @@ ice cream: gabro 20
 
 @people gabro dani
   ice cream: gabro 20
+
+@people +dani +luca -gabro
+  ice cream: dani 20

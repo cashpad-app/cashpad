@@ -37,3 +37,12 @@ describe 'brain', ->
       line.beneficiaries.should.have.length 2
       line.beneficiaries.should.containDeep [name: 'gabro']
       line.beneficiaries.should.containDeep [name: 'dani']
+
+    it 'should compute the people delta in the nested context', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[2]
+      line.context.people.should.have.length 2
+      line.context.should.containEql 'luca'
+      line.context.should.containEql 'daniele'
+      line.context.should.not.containEql 'gabro'
