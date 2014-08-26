@@ -198,7 +198,7 @@ options
 
 option
   = "..." { return { name: "group" }; }
-  / "$"+ { return { name: "split" }; }
+  / "$"+ { return { name: "splitProportionally" }; }
 
 expr
   = res:sum { return res; }

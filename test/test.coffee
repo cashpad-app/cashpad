@@ -61,6 +61,10 @@ describe 'peg parser', ->
       line.payers.should.containEql name: 'daniele', amount: 96
       line.beneficiaries.should.be.empty
 
+    it 'should parse $', ->
+      line = lines[17]
+      line.options.should.containDeep [name: 'splitProportionally']
+
 describe 'brain', ->
   describe 'simple line', ->
     it 'should inherit people from the context', ->
