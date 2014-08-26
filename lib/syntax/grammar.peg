@@ -72,22 +72,20 @@ name
     return name.join("").toLowerCase();
   }
 
-lines
-  = ll:line* {
-    return ll.filter(function(l) { return l != null });
-  }
-
 line
-  = SAMEDENT t:transaction EOL* comment? EOL* {
-    return t;
-  }
-  / t:transaction EOL* comment? EOL* {
-    return t;
-  }
-  / SAMEDENT gh:group_header EOL INDENT ll:line+ OUTDENT {
-    return {group: { context: gh, lines:ll }};
-  }
+  = SAMEDENT t:transaction_line { return t; }
+  / t:transaction_line { return t; }
+  / SAMEDENT h:header_line { return h; }
+  / h:header_line { return h; }
   / comment EOL* { return null; }
+
+transaction_line
+  = t:transaction EOL* comment? EOL* { return t; }
+
+header_line
+  = gh:group_header EOL INDENT ll:line+ OUTDENT {
+      return {group: { context: gh, lines:ll }};
+    }
 
 transaction
   = date:(d:date _ {return d;})?
