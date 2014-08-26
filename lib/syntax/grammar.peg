@@ -17,7 +17,9 @@
 }
 
 start
-  = h:header EOL+ ll:lines {
+  = header_line
+  /* syntactic sugar: allow zero-nesting for first group */
+  / h:header EOL+ ll:lines {
       return {
         group: {
           context: h,
