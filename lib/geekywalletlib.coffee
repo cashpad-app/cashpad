@@ -160,8 +160,8 @@ define ->
 
     abbrev: (list) =>
       # sort them lexicographically, so that they're next to their nearest kin
-      list = list.sort (a, b) -> (if a is b then 0 else (if a > b then 1 else -1))
-      
+      list = list.sort (a, b) -> (a.localeCompare b)
+ 
       # walk through each, seeing how much it has in common with the next and previous
       abbrevs = {}
       prev = ""
