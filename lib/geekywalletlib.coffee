@@ -19,6 +19,9 @@ define ->
       @computed = @flatListOfLines.map (line) => @computeLine(line)
       @computed
 
+    # get errors by line, to be called after computeFromParsed
+    getErrors: => @errors || {}
+
     # flatten context into each line
     # TODO take care of abbreviations
     getFlatListOfLines: (lines, context) =>
@@ -104,11 +107,7 @@ define ->
           for own person, val of line.computed.spent
             do => line.computed.spent[person] += val / bensTotalSpentAmount * toDistribute
         else
-          line.errors.push
-            code: "PAYED_AMOUNT_NOT_MATCHING_ERROR"
-            message: "total spent amunt computed doesn't sum up to what was spent"
-            recoverySuggestions: "either edit the spent amounts or distribute the remainder among" +
-              "others in the current people group using '...'. If you forgot taxes or tip use '$'"
+          @addError("PAYED_AMOUNT_NOT_MATCHING_ERROR", line.line, line)
       # compute balance
       for own person, val of line.computed.spent
         do (person) =>
@@ -153,12 +152,7 @@ define ->
         not line.context.people.some (personName) -> personName == payer.name
       alienPersons = (alienBeneficiaries.concat alienPayers).map (p) -> p.name
       if alienPersons.length > 0
-        verb = if alienPersons.length > 1 then 'are' else 'is'
-        line.errors.push
-          code: "ALIEN_PERSON_ERROR"
-          message: "#{alienPersons.join(", ")} #{verb} not present in the current context"
-          recoverySuggestions: "you should add the missing persons with a @people command. " +
-            "You can edit the current people group with @people #{alienPersons.map((name) -> "+#{name}").join(" ")} "
+        @addError("ALIEN_PERSON_ERROR", line.line, line, {alienPersons: alienPersons})
 
     getOption: (line, optionName) =>
       line.options.filter((x) -> x.name == optionName)[0]
@@ -202,3 +196,30 @@ define ->
           j++
         i++
       abbrevs
+
+    addError: (code, lineNumber, lineObject=null, options={}) =>
+      @errors ?= {}
+      @errors[lineNumber] ?= []
+      e = switch code
+
+        when "ALIEN_PERSON_ERROR"
+          verb = if options.alienPersons.length > 1 then 'are' else 'is'
+          message: "#{options.alienPersons.join(", ")} #{verb} not present in the current context"
+          recoverySuggestions: "you should add the missing persons with a @people command. " +
+            "You can edit the current people group with @people #{options.alienPersons.map((name) -> "+#{name}").join(" ")} "
+
+        when "PAYED_AMOUNT_NOT_MATCHING_ERROR"
+          message: "total spent amunt computed doesn't sum up to what was spent"
+          recoverySuggestions: "either edit the spent amounts or distribute the remainder among" +
+            "others in the current people group using '...'. If you forgot taxes or tip use '$'"
+
+      e.code = code
+      e.type = if ~code.indexOf "ERROR"
+        "error"
+      else if ~code.indexOf "WARNING"
+        "warning"
+
+      if lineObject?
+        lineObject.errors.push e
+      @errors[lineNumber].push e
+
