@@ -69,21 +69,22 @@ It's the twitter era, who's up for some hashtags?
       booze: daniele 30 -> luca 0
       bitches: daniele 120 -> daniele // WAIT, WAT?!
 
-advanced stuff
-==============
+advanced stuff (work in progress)
+===================================
 for the brave of hearts..
-- reverse
+- reverse (did you earn/win something instead of spending?)
   
         lottery: luca 100 <- ...
   
-- ignore in cash flow *
+- ignore in cash flow
   
         * previous debt: daniele 100 -> gabro
 
-- personal expenses with
+- personal expenses
+ 
         pizza: luca 12 -> luca
 
-  or create a group just for you, and probably put it in a separate file to be included
+  or create a group just for you, which you can even put in a separate file
   
       @people luca
         pizza: luca 12
