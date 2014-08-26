@@ -23,7 +23,8 @@ start
       return {
         group: {
           context: h,
-          lines: ll
+          lines: ll,
+          line: line()
         }
       }
     }
@@ -91,7 +92,7 @@ transaction_line
 
 header_line
   = gh:group_header EOL+ INDENT ll:lines OUTDENT {
-      return {group: { context: gh, lines:ll }};
+      return {group: { context: gh, lines:ll, line: line() }};
     }
 
 transaction
