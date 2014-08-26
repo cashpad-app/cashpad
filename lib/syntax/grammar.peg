@@ -133,7 +133,7 @@ date
   }
 
 description
-  = w:[^:#@]+ {
+  = w:[^:@]+ {
       var desc = w.join("");
       return {
         desc: desc,
