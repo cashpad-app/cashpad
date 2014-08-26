@@ -19,7 +19,7 @@
 start
   = header_line
   /* syntactic sugar: allow zero-nesting for first group */
-  / h:header EOL+ ll:lines {
+  / h:header EOL+ ll:lines? {
       return {
         group: {
           context: h,
@@ -27,6 +27,11 @@ start
         }
       }
     }
+
+lines
+  = ll:line+ {
+    return ll.filter(function(l) { return l != null });
+  }
 
 header
   = group_header
@@ -85,7 +90,7 @@ transaction_line
   = t:transaction EOL* comment? EOL* { return t; }
 
 header_line
-  = gh:group_header EOL INDENT ll:line+ OUTDENT {
+  = gh:group_header EOL+ INDENT ll:lines OUTDENT {
       return {group: { context: gh, lines:ll }};
     }
 
