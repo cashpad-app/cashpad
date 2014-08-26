@@ -14,6 +14,10 @@ define ->
 
   class Brain
 
+    parseAndCompute: (textInput) =>
+      parsed = parser.parse(textInput)
+      @computeFromParsed(parsed)
+
     computeFromParsed: (parsed) =>
       @flatListOfLines = @getFlatListOfLines(parsed.group.lines, parsed.group.context)
       @computed = @flatListOfLines.map (line) => @computeLine(line)

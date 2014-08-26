@@ -2,7 +2,7 @@ module.exports = (grunt) ->
 
   grunt.initConfig
 
-    clean: ['dist']
+    clean: ['dist', '.tmp']
 
     copy:
       bower:
@@ -67,7 +67,7 @@ module.exports = (grunt) ->
         ]
         tasks: ['build']
       test:
-        files: ['**/*.coffee']
+        files: ['**/*.coffee', '**/*.wallet']
         tasks: ['test']
         options:
           atBegin: true

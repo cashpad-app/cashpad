@@ -1,6 +1,6 @@
 {
   "name": "geekywallet",
-  "version": "0.0.0",
+  "version": "0.2.0",
   "homepage": "https://github.com/buildo/geekywallet",
   "authors": [
     "we@buildo.io"
@@ -17,8 +17,6 @@
     "dist/geekywallet.js"
   ],
   "dependencies": {
-    "abbrev-js": "isaacs/abbrev-js#~1.0.5",
-    "underscore": "~1.6.0",
     "requirejs": "~2.1.14",
     "requirejs-plugins": "~1.0.2"
   }
