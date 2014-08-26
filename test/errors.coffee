@@ -19,8 +19,8 @@ describe 'brain (errors)', ->
     (line.errors?).should.be.true
     line.errors.should.have.length 1
     line.errors[0].code.should.eql 'ALIEN_PERSON_ERROR'
+    line.errors[0].type.should.eql 'error'
     (line.errors[0].message.indexOf('marco') == -1).should.be.false
-    console.log errors
     errors[4][0].code.should.eql 'ALIEN_PERSON_ERROR'
 
   it 'should produce an error when a payer is not in the current group', ->
@@ -28,6 +28,7 @@ describe 'brain (errors)', ->
     (line.errors?).should.be.true
     line.errors.should.have.length 1
     line.errors[0].code.should.eql 'ALIEN_PERSON_ERROR'
+    line.errors[0].type.should.eql 'error'
     (line.errors[0].message.indexOf('gianni') == -1).should.be.false
     errors[7][0].code.should.eql 'ALIEN_PERSON_ERROR'
 
@@ -36,7 +37,13 @@ describe 'brain (errors)', ->
     (line.errors?).should.be.true
     line.errors.should.have.length 1
     line.errors[0].code.should.eql 'PAYED_AMOUNT_NOT_MATCHING_ERROR'
+    line.errors[0].type.should.eql 'error'
     (line.errors[0].message.indexOf('spent') == -1).should.be.false
-    console.log errors
     errors[10][0].code.should.eql 'PAYED_AMOUNT_NOT_MATCHING_ERROR'
+
+  it 'should produce a warning when adding a person already present', ->
+    errors[13][0].code.should.eql 'PERSON_ADDED_ALREADY_IN_CONTEXT_WARNING'
+
+  it 'should produce a warning when removing a person that was not present', ->
+    errors[14][0].code.should.eql 'PERSON_REMOVED_NOT_IN_CONTEXT_WARNING'
 

@@ -27,7 +27,7 @@ define ->
     getFlatListOfLines: (lines, context) =>
       lines.reduce ((flatList, line) =>
         if line.group? # line is actually a group...
-          nestedFlatList = @getFlatListOfLines(line.group.lines, @mergeContext(context, line.group.context))
+          nestedFlatList = @getFlatListOfLines(line.group.lines, @mergeContext(context, line.group.context, line.group.line))
           flatList = flatList.concat nestedFlatList
         else
           line.context = {}
@@ -37,7 +37,7 @@ define ->
       ), []
 
     # merge context for nexted groups
-    mergeContext: (parentContext, childContext) ->
+    mergeContext: (parentContext, childContext, lineNumber) ->
       context = {}
       # merge people
       if childContext.people?
@@ -48,14 +48,14 @@ define ->
           do =>
             if person.mod == '+'
               if parentContext.people.some((name) => name == person.name)
-                # todo generate warning
+                @addError('PERSON_ADDED_ALREADY_IN_CONTEXT_WARNING', lineNumber, null, {name: person.name})
               else
                 context.people.push person.name
             else if person.mod == '-'
               if parentContext.people.some((name) => name == person.name)
                 context.people = context.people.filter (name) => name != person.name
               else
-                # todo generate warning
+                @addError('PERSON_REMOVED_NOT_IN_CONTEXT_WARNING', lineNumber, null, {name: person.name})
       context
 
 
@@ -198,12 +198,13 @@ define ->
       abbrevs
 
     addError: (code, lineNumber, lineObject=null, options={}) =>
+      pluralize = (list, singular, plural) -> if list.length > 1 then plural else singular
       @errors ?= {}
       @errors[lineNumber] ?= []
       e = switch code
 
         when "ALIEN_PERSON_ERROR"
-          verb = if options.alienPersons.length > 1 then 'are' else 'is'
+          verb = pluralize(options.alienPersons, 'is', 'are')
           message: "#{options.alienPersons.join(", ")} #{verb} not present in the current context"
           recoverySuggestions: "you should add the missing persons with a @people command. " +
             "You can edit the current people group with @people #{options.alienPersons.map((name) -> "+#{name}").join(" ")} "
@@ -212,6 +213,14 @@ define ->
           message: "total spent amunt computed doesn't sum up to what was spent"
           recoverySuggestions: "either edit the spent amounts or distribute the remainder among" +
             "others in the current people group using '...'. If you forgot taxes or tip use '$'"
+
+        when "PERSON_ADDED_ALREADY_IN_CONTEXT_WARNING"
+          message: "you added #{options.name} but it was already present"
+          recoverySuggestions: "remove +#{options.name} from the @people declaration"
+
+        when "PERSON_REMOVED_NOT_IN_CONTEXT_WARNING"
+          message: "you removed #{options.name} but it was not present"
+          recoverySuggestions: "remove -#{options.name} from the @people declaration"
 
       e.code = code
       e.type = if ~code.indexOf "ERROR"
