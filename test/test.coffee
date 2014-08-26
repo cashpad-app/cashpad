@@ -137,7 +137,7 @@ describe 'brain', ->
       line.beneficiaries.should.containDeep [name: 'luca']
       line.beneficiaries.should.containDeep [name: 'gabriele']
       line.beneficiaries.should.not.containDeep [name: 'daniele']
-      
+
     it 'should not have a fixed amount when no amount is specified', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
@@ -172,7 +172,7 @@ describe 'brain', ->
       line = computedLines[6]
       line.beneficiaries.filter((b) -> b.name == 'luca')[0].modifiers.multiplier.should.equal 1
       line.beneficiaries.filter((b) -> b.name == 'gabriele')[0].modifiers.multiplier.should.equal 2
-      (line.beneficiaries.filter((b) -> b.name == 'daniele')[0].modifiers.multiplier?).should.be.false 
+      (line.beneficiaries.filter((b) -> b.name == 'daniele')[0].modifiers.multiplier?).should.be.false
       line.computing.totalMultiplier.should.equal 3 # only people with a non-fixed amount are considered
 
     it 'should compute the total spent amount', ->
@@ -250,7 +250,7 @@ describe 'brain', ->
         names.push name
       names.should.have.length 2
 
-    it.skip 'should proportionally split the expense using $', ->
+    it 'should proportionally split the expense using $', ->
       result = parser.parse wallet
       computedLines = brain.computeFromParsed result
       line = computedLines[17]

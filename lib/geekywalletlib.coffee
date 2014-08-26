@@ -94,20 +94,25 @@ define ->
       line.payers.map (payer) ->
         line.computed.given[payer.name] = payer.amount
         line.computed.spent[payer.name] ?= 0
-      # compute balance
-      for own person, val of line.computed.spent
-        do (person) =>
-          line.computed.balance[person] = line.computed.given[person] - line.computed.spent[person]
-      # validation
+      # validation and proportional split ($)
       bensTotalSpentAmount = 0
       for own person, val of line.computed.spent
         do => bensTotalSpentAmount += val
       if bensTotalSpentAmount != totalSpentAmount
-        line.errors.push
-          code: "PAYED_AMOUNT_NOT_MATCHING_ERROR"
-          message: "total spent amunt computed doesn't sum up to what was spent"
-          recoverySuggestions: "either edit the spent amounts or distribute the remainder among" +
-            "others in the current people group using '...'. If you forgot taxes or tip use '$'"
+        if @getOption(line, "splitProportionally")
+          toDistribute = totalSpentAmount - bensTotalSpentAmount
+          for own person, val of line.computed.spent
+            do => line.computed.spent[person] += val / bensTotalSpentAmount * toDistribute
+        else
+          line.errors.push
+            code: "PAYED_AMOUNT_NOT_MATCHING_ERROR"
+            message: "total spent amunt computed doesn't sum up to what was spent"
+            recoverySuggestions: "either edit the spent amounts or distribute the remainder among" +
+              "others in the current people group using '...'. If you forgot taxes or tip use '$'"
+      # compute balance
+      for own person, val of line.computed.spent
+        do (person) =>
+          line.computed.balance[person] = line.computed.given[person] - line.computed.spent[person]
       # return line object
       line
 
@@ -161,7 +166,7 @@ define ->
     abbrev: (list) =>
       # sort them lexicographically, so that they're next to their nearest kin
       list = list.sort (a, b) -> (a.localeCompare b)
- 
+
       # walk through each, seeing how much it has in common with the next and previous
       abbrevs = {}
       prev = ""
