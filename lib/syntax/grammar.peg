@@ -130,7 +130,7 @@ transaction
     }
 
 comment
-  = "//" _? c:[^\n]* { return c.join("").trim(); }
+  = _? "//" _? c:[^\n]* { return c.join("").trim(); }
 
 date
   = year:([0-9][0-9][0-9][0-9]?)"-"month:([0-9][0-9])"-"day:([0-9][0-9]) {
