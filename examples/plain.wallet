@@ -20,3 +20,6 @@ dinner: daniele 96 -> gabriele -6 luca
 dinner: daniele 96 -> gabriele 6 luca 19
 
 dinner: daniele 96 -> ...
+
+// testing $ proportional split
+booze: luca 26 -> luca 4 daniele 8 gabriele 8

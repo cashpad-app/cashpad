@@ -245,3 +245,11 @@ describe 'brain', ->
       for own name,bal of line.computed.balance
         names.push name
       names.should.have.length 2
+
+    it.skip 'should proportionally split the expense using $', ->
+      result = parser.parse wallet
+      computedLines = brain.computeFromParsed result
+      line = computedLines[17]
+      line.computed.spent.gabriele.should.eql 10.4
+      line.computed.spent.daniele.should.eql 10.4
+      line.computed.spent.luca.should.eql 5.2
