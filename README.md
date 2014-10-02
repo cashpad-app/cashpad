@@ -46,7 +46,7 @@ Actually that wasn't the only expense of the day, how about grouping them?
 
     @date 2014-07-30
       breakfast: luca 10
-      coffee: daniele 7 -> gabriele daniele
+      tea: daniele 7 -> gabriele daniele
       skydiving: daniele 120 -> luca gabriele
 
 The next day luca is wandering off by himself...
