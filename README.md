@@ -4,9 +4,7 @@ keep track of personal and group expenses, geeky style
 
 ## a short vacation story
 
-Luca, Gabriele and Daniele go together in vacation in Milan for a few days..
-
-    @people luca gabriele daniele
+   @people luca gabriele daniele
 
 First, they buy their plane tickets, which cost 150$. Luca pays for everyone
    
@@ -81,6 +79,7 @@ for the brave of hearts..
         * previous debt: daniele 100 -> gabro
 
 - personal expenses
+  or create a group just for you, which you can even put in a separate file
  
         pizza: luca 12 -> luca
 
