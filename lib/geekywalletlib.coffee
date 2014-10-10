@@ -1,11 +1,5 @@
 define ->
 
-  Array::sum = (fn = (x) -> x) ->
-    @reduce ((a, b) ->
-      elem = fn(b) || 0
-      a + elem
-    ), 0
-
   if not Array.prototype.some
     Array.prototype.some = (f) -> (x for x in @ when f(x)).length > 0
 
@@ -71,10 +65,16 @@ define ->
       # validation tasks..
       @validateLine(line)
       # intermediate computation steps
-      totalSpentAmount = line.payers.sum (x) -> x.amount
-      totalFixedAmount = line.beneficiaries.sum (x) -> x.fixedAmount
-      totalOffset = line.beneficiaries.sum (x) -> x.modifiers.offset
-      totalMultiplier = line.beneficiaries.sum (x) -> x.modifiers.multiplier
+      sum = (array, fn = (x) -> x) ->
+        array.reduce ((a, b) ->
+          elem = fn(b) || 0
+          a + elem
+        ), 0
+
+      totalSpentAmount = sum line.payers, (x) -> x.amount
+      totalFixedAmount = sum line.beneficiaries, (x) -> x.fixedAmount
+      totalOffset = sum line.beneficiaries, (x) -> x.modifiers.offset
+      totalMultiplier = sum line.beneficiaries, (x) -> x.modifiers.multiplier
       amountToDivide = totalSpentAmount - totalFixedAmount - totalOffset
       amountForEachOne = amountToDivide / totalMultiplier
       line.computing =

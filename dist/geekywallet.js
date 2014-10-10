@@ -2689,18 +2689,6 @@ parser = (function() {
 
   define(function() {
     var Brain;
-    Array.prototype.sum = function(fn) {
-      if (fn == null) {
-        fn = function(x) {
-          return x;
-        };
-      }
-      return this.reduce((function(a, b) {
-        var elem;
-        elem = fn(b) || 0;
-        return a + elem;
-      }), 0);
-    };
     if (!Array.prototype.some) {
       Array.prototype.some = function(f) {
         var x;
@@ -2828,19 +2816,31 @@ parser = (function() {
       };
 
       Brain.prototype.computeLine = function(line) {
-        var amountForEachOne, amountToDivide, bensTotalSpentAmount, person, toDistribute, totalFixedAmount, totalMultiplier, totalOffset, totalSpentAmount, val, _fn, _fn1, _fn2, _ref, _ref1, _ref2;
+        var amountForEachOne, amountToDivide, bensTotalSpentAmount, person, sum, toDistribute, totalFixedAmount, totalMultiplier, totalOffset, totalSpentAmount, val, _fn, _fn1, _fn2, _ref, _ref1, _ref2;
         this.preprocessLine(line);
         this.validateLine(line);
-        totalSpentAmount = line.payers.sum(function(x) {
+        sum = function(array, fn) {
+          if (fn == null) {
+            fn = function(x) {
+              return x;
+            };
+          }
+          return array.reduce((function(a, b) {
+            var elem;
+            elem = fn(b) || 0;
+            return a + elem;
+          }), 0);
+        };
+        totalSpentAmount = sum(line.payers, function(x) {
           return x.amount;
         });
-        totalFixedAmount = line.beneficiaries.sum(function(x) {
+        totalFixedAmount = sum(line.beneficiaries, function(x) {
           return x.fixedAmount;
         });
-        totalOffset = line.beneficiaries.sum(function(x) {
+        totalOffset = sum(line.beneficiaries, function(x) {
           return x.modifiers.offset;
         });
-        totalMultiplier = line.beneficiaries.sum(function(x) {
+        totalMultiplier = sum(line.beneficiaries, function(x) {
           return x.modifiers.multiplier;
         });
         amountToDivide = totalSpentAmount - totalFixedAmount - totalOffset;
