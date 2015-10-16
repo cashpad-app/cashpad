@@ -1,9 +1,9 @@
 import { map, reduce, forEach, filter, sortBy, merge, some, every } from 'lodash';
 import abbrev from 'abbrev';
 
-const errors = {},
-  flatListOfLines,
-  computed;
+const errors = {};
+let flatListOfLines = undefined,
+  computed = undefined;
 
 
 const parseAndCompute = (textInput) => {
@@ -33,9 +33,9 @@ const getFlatListOfLines = (lines, context) => {
         flatList.push(line);
       }
       return flatList;
-    ),
+    },
     []
-  });
+  );
 };
 
 // merge context for nexted groups
@@ -73,9 +73,10 @@ const computeLine = (line) => {
   // validation tasks..
   validateLine(line);
   // intermediate computation steps
-  const mapSum = (array, fn || (x)  =>  x) => {
+  const mapSum = (array, fn) => {
+    fn = fn || ((x) => x);
     return array.reduce((a, b)  => a + (fn(b) || 0), 0);
-  });
+  };
 
   const totalSpentAmount = mapSum(line.payers, (x) => x.amount);
   const totalFixedAmount = mapSum(line.beneficiaries, (x) => x.fixedAmount);
@@ -115,13 +116,13 @@ const computeLine = (line) => {
       const toDistribute = totalSpentAmount - bensTotalSpentAmount;
       line.computed.spent = map(line.computed.spent, (v, k) => v + (v / bensTotalSpentAmount * toDistribute));
     } else {
-      addError('PAYED_AMOUNT_NOT_MATCHING_ERROR', line.line, line)
+      addError('PAYED_AMOUNT_NOT_MATCHING_ERROR', line.line, line);
     }
   }
   // compute balance
   forEach(line.computed.spent, (v, person) => {
-    line.computed.balance[person] = line.computed.given[person] - line.computed.spent[person]
-  }
+    line.computed.balance[person] = line.computed.given[person] - line.computed.spent[person];
+  });
   // return line object
   return line;
 };
@@ -133,11 +134,11 @@ const preprocessLine = (line) => {
 
   if (line.beneficiaries) {
     forEach(line.beneficiaries, (ben) => ben.name = abbreviations[ben.name] || ben.name);
-  }
-  // add beneficiaries from context if none is defined
-  unless line.beneficiaries? {
+  } else {
+    // add beneficiaries from context if none is defined
     line.beneficiaries = map(line.context.people, (name) => ({ name }));
   }
+
   // add remaining beneficiaries if option group is present ...
   // ... or if there are only offset and fixedamount and at least one offset
   const atLeastOneOffset = some(line.beneficiaries, (ben) => ben.modifiers && ben.modifiers.offset)
@@ -164,8 +165,8 @@ const validateLine = (line) => {
   line.errors = line.errors || [];
   line.warnings = line.warnings || [];
   // throw an error if a non existing beneficiary or payer is found
-  const alienBeneficiaries = filter(line.beneficiaries, (ben) => !some(line.context.people, (personName) => personName === ben.name);
-  const alienPayers = filter(line.payers, (payer) => !some(line.context.people, (personName) => personName === payer.name);
+  const alienBeneficiaries = filter(line.beneficiaries, (ben) => !some(line.context.people, (personName) => personName === ben.name));
+  const alienPayers = filter(line.payers, (payer) => !some(line.context.people, (personName) => personName === payer.name));
   const alienPersons = map(alienBeneficiaries.concat(alienPayers), (p) => p.name);
   if (alienPersons.length > 0) {
     addError('ALIEN_PERSON_ERROR', line.line, line, { alienPersons });
@@ -174,7 +175,9 @@ const validateLine = (line) => {
 
 const getOption = (line, optionName) => filter(line.options, (x) => x.name === optionName)[0];
 
-const addError = (code, lineNumber, lineObject || null, options || {}) => {
+const addError = (code, lineNumber, lineObject, options) => {
+  lineObject = lineObject || null;
+  options = options || {};
   const pluralize = (list, singular, plural) => list.length > 1 ? plural : singular;
   const errors = getErrors();
   errors[lineNumber] = errors[lineNumber] || [];
