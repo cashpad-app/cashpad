@@ -1,5 +1,6 @@
 import { map, reduce, forEach, filter, sortBy, merge, some, every } from 'lodash';
 import abbrev from 'abbrev';
+import parser from './generatedParser.js';
 
 const errors = {};
 let flatListOfLines = undefined,
