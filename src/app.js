@@ -1,10 +1,10 @@
-import { map, reduce, forEach, filter, sortBy, merge, some, every } from 'lodash';
+import { map, reduce, forEach, filter, merge, some, every, includes } from 'lodash';
 import abbrev from 'abbrev';
 import parser from './generatedParser.js';
 
 const errors = {};
-let flatListOfLines = undefined,
-  computed = undefined;
+let flatListOfLines,
+  computed;
 
 
 const parseAndCompute = (textInput) => {
@@ -41,7 +41,7 @@ const getFlatListOfLines = (lines, context) => {
 
 // merge context for nexted groups
 const mergeContext = (parentContext, childContext, lineNumber) => {
-  context = {};
+  const context = {};
   // merge people
   if (childContext.people) {
     context.people = childContext.people;
@@ -76,7 +76,7 @@ const computeLine = (line) => {
   // intermediate computation steps
   const mapSum = (array, fn) => {
     fn = fn || ((x) => x);
-    return array.reduce((a, b)  => a + (fn(b) || 0), 0);
+    return array.reduce((a, b) => a + (fn(b) || 0), 0);
   };
 
   const totalSpentAmount = mapSum(line.payers, (x) => x.amount);
@@ -111,11 +111,11 @@ const computeLine = (line) => {
     line.computed.spent[payer.name] = line.computed.spent[payer.name] || 0;
   });
   // validation and proportional split ($)
-  const bensTotalSpentAmount = reduce(line.computed.spent, (acc, v, k) => acc + v);
+  const bensTotalSpentAmount = reduce(line.computed.spent, (acc, v) => acc + v);
   if (bensTotalSpentAmount !== totalSpentAmount) {
     if (getOption(line, 'splitProportionally')) {
       const toDistribute = totalSpentAmount - bensTotalSpentAmount;
-      line.computed.spent = map(line.computed.spent, (v, k) => v + (v / bensTotalSpentAmount * toDistribute));
+      line.computed.spent = map(line.computed.spent, (v) => v + (v / bensTotalSpentAmount * toDistribute));
     } else {
       addError('PAYED_AMOUNT_NOT_MATCHING_ERROR', line.line, line);
     }
@@ -142,7 +142,7 @@ const preprocessLine = (line) => {
 
   // add remaining beneficiaries if option group is present ...
   // ... or if there are only offset and fixedamount and at least one offset
-  const atLeastOneOffset = some(line.beneficiaries, (ben) => ben.modifiers && ben.modifiers.offset)
+  const atLeastOneOffset = some(line.beneficiaries, (ben) => ben.modifiers && ben.modifiers.offset);
   const onlyOffsetAndFixedAmount = every(line.beneficiaries, (ben) => ben.fixedAmount || (ben.modifiers && ben.modifiers.offset));
   const addMissingBeneficiaries = getOption(line, 'group') || (atLeastOneOffset && onlyOffsetAndFixedAmount);
 
@@ -203,8 +203,8 @@ const addError = (code, lineNumber, lineObject, options) => {
     }
   };
 
-  e = errorTypes[code];
-  e.code = code
+  const e = errorTypes[code];
+  e.code = code;
   if (includes(code, 'ERROR')) {
     e.type = 'error';
   } else if (includes(code, 'WARNING')) {
@@ -218,7 +218,7 @@ const addError = (code, lineNumber, lineObject, options) => {
 };
 
 export default {
-  parse,
+  parser,
   parseAndCompute,
   getErrors
 };
