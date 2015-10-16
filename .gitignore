@@ -1,5 +1,5 @@
 ### Custom ###
-lib/*.js
+lib
 test/*.js
 grammar.js
 bower_components/
