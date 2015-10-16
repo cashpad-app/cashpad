@@ -158,7 +158,7 @@ const preprocessLine = (line) => {
         multiplier: ben.fixedAmount ? null : 1
       }
     };
-    return merge({}, ben, defaults);
+    return merge(defaults, ben);
   });
 };
 
