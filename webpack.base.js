@@ -10,7 +10,9 @@ module.exports = {
 
   output: {
     path: paths.DIST,
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    libraryTarget: 'umd',
+    library: 'cashpad'
   },
 
   module: {
