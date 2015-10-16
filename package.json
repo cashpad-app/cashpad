@@ -6,13 +6,11 @@
   "scripts": {
     "test": "./node_modules/karma/bin/karma start",
     "generate-parser": "pegjs src/syntax/grammar.peg src/generatedParser.js",
-    "build": "rm -rf lib && mkdir lib && webpack --config webpack.config.build.js --progress",
+    "build": "rm -rf lib && mkdir lib && npm run generate-parser && webpack --config webpack.config.build.js --progress",
     "lint": "eslint src",
     "preversion": "npm run lint && npm run test && npm run build-examples",
     "postversion": "git push && git push --tags",
     "prepublish": "npm run build",
-    "build-examples": "npm run clean && webpack --config examples/webpack.config.build.js --progress",
-    "start": "npm run clean && webpack-dev-server --config examples/webpack.config.js --progress --hot --inline",
     "clean": "rm -f examples/bundle.js examples/bundle.js.map"
   },
   "repository": {
