@@ -178,7 +178,7 @@ const getOption = (line, optionName) => filter(line.options, (x) => x.name === o
 
 const addError = (code, lineNumber, lineObject, options) => {
   lineObject = lineObject || null;
-  options = options || {};
+  options = options || { alienPersons: [] };
   const pluralize = (list, singular, plural) => list.length > 1 ? plural : singular;
   const errors = getErrors();
   errors[lineNumber] = errors[lineNumber] || [];
