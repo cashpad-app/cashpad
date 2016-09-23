@@ -1,6 +1,9 @@
-import { map, reduce, forEach, filter, merge, some, every, includes } from 'lodash';
+import { map, reduce, forEach, filter, merge, some, every, includes, mapValues, line} from 'lodash';
 import abbrev from 'abbrev';
+import BigNumber from 'bignumber.js'
 import parser from './generatedParser.js';
+
+const ZERO = new BigNumber(0);
 
 const errors = {};
 let flatListOfLines,
@@ -76,15 +79,15 @@ const computeLine = (line) => {
   // intermediate computation steps
   const mapSum = (array, fn) => {
     fn = fn || ((x) => x);
-    return array.reduce((a, b) => a + (fn(b) || 0), 0);
+    return array.reduce((a, b) => a.plus(fn(b) || ZERO), ZERO);
   };
 
   const totalSpentAmount = mapSum(line.payers, (x) => x.amount);
   const totalFixedAmount = mapSum(line.beneficiaries, (x) => x.fixedAmount);
   const totalOffset = mapSum(line.beneficiaries, (x) => x.modifiers.offset);
   const totalMultiplier = mapSum(line.beneficiaries, (x) => x.modifiers.multiplier);
-  const amountToDivide = (totalSpentAmount - totalFixedAmount - totalOffset);
-  const amountForEachOne = (amountToDivide / totalMultiplier);
+  const amountToDivide = totalSpentAmount.minus(totalFixedAmount).minus(totalOffset);
+  const amountForEachOne = amountToDivide.div(totalMultiplier);
   line.computing = {
     totalSpentAmount: totalSpentAmount,
     totalOffset: totalOffset,
@@ -101,29 +104,40 @@ const computeLine = (line) => {
   };
   forEach(line.beneficiaries, (ben) => {
     // spent
-    line.computed.spent[ben.name] = ben.fixedAmount || (amountForEachOne * ben.modifiers.multiplier + ben.modifiers.offset);
+    line.computed.spent[ben.name] = ben.fixedAmount ?
+      new BigNumber(ben.fixedAmount) :
+      amountForEachOne.times(ben.modifiers.multiplier).plus(ben.modifiers.offset);
     // set given to 0 as default for beneficiaries
-    line.computed.given[ben.name] = 0;
+    line.computed.given[ben.name] = ZERO;
   });
   // given
   forEach(line.payers, (payer) => {
-    line.computed.given[payer.name] = payer.amount;
-    line.computed.spent[payer.name] = line.computed.spent[payer.name] || 0;
+    line.computed.given[payer.name] = new BigNumber(payer.amount);
+    line.computed.spent[payer.name] = line.computed.spent[payer.name] ?
+      new BigNumber(line.computed.spent[payer.name]) :
+      ZERO;
   });
   // validation and proportional split ($)
-  const bensTotalSpentAmount = reduce(line.computed.spent, (acc, v) => acc + v);
-  if (bensTotalSpentAmount !== totalSpentAmount) {
+  const bensTotalSpentAmount = reduce(line.computed.spent, (acc, v) => (new BigNumber(acc)).plus(v));
+  if (!bensTotalSpentAmount.equals(totalSpentAmount)) {
     if (getOption(line, 'splitProportionally')) {
-      const toDistribute = totalSpentAmount - bensTotalSpentAmount;
-      line.computed.spent = map(line.computed.spent, (v) => v + (v / bensTotalSpentAmount * toDistribute));
+      const toDistribute = totalSpentAmount.minus(bensTotalSpentAmount);
+      line.computed.spent = map(line.computed.spent, (v) => (new BigNumber(v)).plus(new BigNumber(v).div(bensTotalSpentAmount).times(toDistribute)));
     } else {
       addError('PAYED_AMOUNT_NOT_MATCHING_ERROR', line.line, line);
     }
   }
   // compute balance
   forEach(line.computed.spent, (v, person) => {
-    line.computed.balance[person] = line.computed.given[person] - line.computed.spent[person];
+    line.computed.balance[person] = (new BigNumber(line.computed.given[person])).minus(line.computed.spent[person]);
   });
+
+  // map values to JS numbers
+  line.computing = mapValues(line.computing, v => v.toNumber());
+  line.computed.balance = mapValues(line.computed.balance, v => v.toNumber());
+  line.computed.given = mapValues(line.computed.given, v => v.toNumber());
+  line.computed.spent = mapValues(line.computed.spent, v => v.toNumber());
+
   // return line object
   return line;
 };

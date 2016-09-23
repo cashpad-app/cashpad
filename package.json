@@ -26,6 +26,7 @@
   "homepage": "https://github.com/cashpad-app/cashpad",
   "dependencies": {
     "abbrev": "^1.0.7",
+    "bignumber.js": "^2.4.0",
     "lodash": "^3.10.1"
   },
   "devDependencies": {
