@@ -182,12 +182,13 @@ const addError = (code, lineNumber, lineObject, options) => {
   const pluralize = (list, singular, plural) => list.length > 1 ? plural : singular;
   const errors = getErrors();
   errors[lineNumber] = errors[lineNumber] || [];
-  const verb = pluralize(options.alienPersons, 'is', 'are');
+  const alienPersons = options.alienPersons || [];
+  const verb = pluralize(alienPersons, 'is', 'are');
 
   const errorTypes = {
     ALIEN_PERSON_ERROR: {
-      message: `${options.alienPersons.join(', ')} ${verb} not present in the current context`,
-      recoverySuggestions: `you should add the missing persons with a @people command. You can edit the current people group with @people ${map(options.alienPersons, (name) => `+${name}`).join(' ')} `
+      message: `${alienPersons.join(', ')} ${verb} not present in the current context`,
+      recoverySuggestions: `you should add the missing persons with a @people command. You can edit the current people group with @people ${map(alienPersons, (name) => `+${name}`).join(' ')} `
     },
     PAYED_AMOUNT_NOT_MATCHING_ERROR: {
       message: `total spent amunt computed doesn't sum up to what was spent`,
