@@ -141,10 +141,7 @@ const preprocessLine = (line) => {
   }
 
   // add remaining beneficiaries if option group is present ...
-  // ... or if there are only offset and fixedamount and at least one offset
-  const atLeastOneOffset = some(line.beneficiaries, (ben) => ben.modifiers && ben.modifiers.offset);
-  const onlyOffsetAndFixedAmount = every(line.beneficiaries, (ben) => ben.fixedAmount || (ben.modifiers && ben.modifiers.offset));
-  const addMissingBeneficiaries = getOption(line, 'group') || (atLeastOneOffset && onlyOffsetAndFixedAmount);
+  const addMissingBeneficiaries = getOption(line, 'group');
 
   if (addMissingBeneficiaries) {
     const missingBeneficiaries = filter(line.context.people, (personName) => !some(line.beneficiaries, (ben) => ben.name === personName));
