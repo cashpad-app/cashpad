@@ -119,7 +119,7 @@ const computeLine = (line) => {
   });
   // validation and proportional split ($)
   const bensTotalSpentAmount = reduce(line.computed.spent, (acc, v) => (new BigNumber(acc)).plus(v));
-  if (!bensTotalSpentAmount.equals(totalSpentAmount)) {
+  if (Math.abs(bensTotalSpentAmount - totalSpentAmount) > 0.00000001) {
     if (getOption(line, 'splitProportionally')) {
       const toDistribute = totalSpentAmount.minus(bensTotalSpentAmount);
       line.computed.spent = map(line.computed.spent, (v) => (new BigNumber(v)).plus(new BigNumber(v).div(bensTotalSpentAmount).times(toDistribute)));
