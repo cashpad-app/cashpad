@@ -147,7 +147,7 @@ const computeLine = (lineWithJSNumbers) => {
   if (Math.abs(bensTotalSpentAmount - totalSpentAmount) > 0.00000001) {
     if (getOption(line, 'splitProportionally')) {
       const toDistribute = totalSpentAmount.minus(bensTotalSpentAmount);
-      line.computed.spent = map(line.computed.spent, (v) => v.plus(v.div(bensTotalSpentAmount).times(toDistribute)));
+      line.computed.spent = mapValues(line.computed.spent, (v) => v.plus(v.div(bensTotalSpentAmount).times(toDistribute)));
     } else {
       addError('PAYED_AMOUNT_NOT_MATCHING_ERROR', line.line, line);
     }
