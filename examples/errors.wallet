@@ -1,15 +1,13 @@
 @people luca gabriele daniele
 
-  // 0. beneficiary not in current group
-  bar: gabriele 20 -> marco luca
+// 0. beneficiary not in current group
+bar: gabriele 20 -> marco luca
 
-  // 1. payer not in current group
-  bar: gianni 20 -> gabriele luca
+// 1. payer not in current group
+bar: gianni 20 -> gabriele luca
 
-  // 2. wrong sum (recovery: use '...' or '$')
-  bar: gabriele 20 -> luca 10 daniele 5
+// 2. wrong sum (recovery: use '...' or '$')
+bar: gabriele 20 -> luca 10 daniele 5
 
-// people already present added
-@people +luca -gabriele
-   @people -gabriele
-     bar: luca 12
+// 3. only offset is invalid (recovery: use '...')
+bar: daniele 20 -> gabriele -6
