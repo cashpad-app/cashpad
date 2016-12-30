@@ -1,6 +1,5 @@
 ### Custom ###
 lib
-test/*.js
 grammar.js
 bower_components/
 dist/
