@@ -9,6 +9,29 @@ const errors = {};
 let flatListOfLines,
   computed;
 
+const numbersToBigNumbers = x => {
+  if (x && Array.isArray(x)) {
+    return x.map(numbersToBigNumbers);
+  } else if (x && typeof x === 'object') {
+    return mapValues(x, numbersToBigNumbers);
+  } else if (x && typeof x === 'number') {
+    return new BigNumber(x);
+  }
+
+  return x;
+};
+
+const bigNumbersToNumbers = x => {
+  if (x && Array.isArray(x)) {
+    return x.map(bigNumbersToNumbers);
+  } else if (x instanceof BigNumber) {
+    return x.toNumber();
+  } else if (x && typeof x === 'object') {
+    return mapValues(x, bigNumbersToNumbers);
+  }
+
+  return x;
+};
 
 const parseAndCompute = (textInput) => {
   const parsed = parser.parse(textInput);
@@ -71,12 +94,16 @@ const mergeContext = (parentContext, childContext, lineNumber) => {
 
 
 // compute balance, spent and given for each line
-const computeLine = (line) => {
+const computeLine = (lineWithJSNumbers) => {
   // preprocessing tasks..
-  preprocessLine(line);
+  preprocessLine(lineWithJSNumbers);
   // validation tasks..
-  validateLine(line);
+  validateLine(lineWithJSNumbers);
+
   // intermediate computation steps
+
+  const line = numbersToBigNumbers(lineWithJSNumbers);
+
   const mapSum = (array, fn) => {
     fn = fn || ((x) => x);
     return array.reduce((a, b) => a.plus(fn(b) || ZERO), ZERO);
@@ -102,44 +129,36 @@ const computeLine = (line) => {
     given: {},
     spent: {}
   };
+
   forEach(line.beneficiaries, (ben) => {
     // spent
-    line.computed.spent[ben.name] = ben.fixedAmount ?
-      new BigNumber(ben.fixedAmount) :
+    line.computed.spent[ben.name] = ben.fixedAmount ||
       amountForEachOne.times(ben.modifiers.multiplier).plus(ben.modifiers.offset);
     // set given to 0 as default for beneficiaries
     line.computed.given[ben.name] = ZERO;
   });
   // given
   forEach(line.payers, (payer) => {
-    line.computed.given[payer.name] = new BigNumber(payer.amount);
-    line.computed.spent[payer.name] = line.computed.spent[payer.name] ?
-      new BigNumber(line.computed.spent[payer.name]) :
-      ZERO;
+    line.computed.given[payer.name] = payer.amount;
+    line.computed.spent[payer.name] = line.computed.spent[payer.name] || ZERO;
   });
   // validation and proportional split ($)
-  const bensTotalSpentAmount = reduce(line.computed.spent, (acc, v) => (new BigNumber(acc)).plus(v));
+  const bensTotalSpentAmount = reduce(line.computed.spent, (acc, v) => acc.plus(v));
   if (Math.abs(bensTotalSpentAmount - totalSpentAmount) > 0.00000001) {
     if (getOption(line, 'splitProportionally')) {
       const toDistribute = totalSpentAmount.minus(bensTotalSpentAmount);
-      line.computed.spent = map(line.computed.spent, (v) => (new BigNumber(v)).plus(new BigNumber(v).div(bensTotalSpentAmount).times(toDistribute)));
+      line.computed.spent = map(line.computed.spent, (v) => v.plus(v.div(bensTotalSpentAmount).times(toDistribute)));
     } else {
       addError('PAYED_AMOUNT_NOT_MATCHING_ERROR', line.line, line);
     }
   }
   // compute balance
   forEach(line.computed.spent, (v, person) => {
-    line.computed.balance[person] = (new BigNumber(line.computed.given[person])).minus(line.computed.spent[person]);
+    line.computed.balance[person] = line.computed.given[person].minus(line.computed.spent[person]);
   });
 
-  // map values to JS numbers
-  line.computing = mapValues(line.computing, v => v.toNumber());
-  line.computed.balance = mapValues(line.computed.balance, v => v.toNumber());
-  line.computed.given = mapValues(line.computed.given, v => v.toNumber());
-  line.computed.spent = mapValues(line.computed.spent, v => v.toNumber());
-
   // return line object
-  return line;
+  return bigNumbersToNumbers(line);
 };
 
 const preprocessLine = (line) => {
