@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/karma/bin/karma start",
+    "test": "jest",
     "generate-parser": "pegjs src/syntax/grammar.peg src/generatedParser.js",
     "build": "rm -rf lib && mkdir lib && npm run generate-parser && webpack --config webpack.config.build.js --progress",
     "lint": "eslint src",
