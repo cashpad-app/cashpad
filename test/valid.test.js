@@ -24,7 +24,7 @@ describe('peg parser', () => {
     });
 
     it('should parse the description', () => {
-      expect(line.desc).toBe('plane ticket');
+      expect(line.desc).toBe('plane ticket #travel');
     });
 
     it('should parse the beneficiaries', () => {
