@@ -227,8 +227,7 @@ describe('brain', () =>
       expect(names).toHaveLength(2);
     });
 
-    // FIXME: this should actually work
-    xit('should proportionally split the expense using $', () => {
+    it('should proportionally split the expense using $', () => {
       const line = computedLines[17];
       expect(line.computed.spent.gabriele).toBe(10.4);
       expect(line.computed.spent.daniele).toBe(10.4);
