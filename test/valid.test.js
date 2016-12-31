@@ -37,9 +37,13 @@ describe('peg parser', () => {
       expect(line.payers).toContainEqual({ name: 'luca', amount: 450 });
     });
 
-    // TODO: check whether tags functionality is still valid
-    xit('should parse the tags', () => {
-      expect(line.tags).not.toBeNull();
+    // TODO: check whether date tags functionality is still valid
+    xit('should parse date tags', () => {
+      expect(line.tags).toContain('2014-04-12');
+    });
+
+    it('should parse hashtags', () => {
+      expect(line.tags).toContain('#travel');
     });
 
     it('should parse the options', () => {
