@@ -1,4 +1,4 @@
-@people luca gabriele daniele
+@people luca gabriele daniele francesco frag
 
 // 0. beneficiary not in current group
 bar: gabriele 20 -> marco luca
@@ -11,3 +11,6 @@ bar: gabriele 20 -> luca 10 daniele 5
 
 // 3. only offset is invalid (recovery: use '...')
 bar: daniele 20 -> gabriele -6
+
+// 4. ambiguous abbreviation
+bar: daniele 20 -> fra luca

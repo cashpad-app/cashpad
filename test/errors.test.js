@@ -38,5 +38,9 @@ describe('brain (errors)', function() {
     expect(errors[10][0].code).toBe('PAYED_AMOUNT_NOT_MATCHING_ERROR');
   });
 
-});
+  it('should produce an error when there is an ambiguous abbreviation', () => {
+    const line = computedLines[4];
+    expect(line.errors).not.toBeNull();
+  });
 
+});
