@@ -40,7 +40,11 @@ describe('brain (errors)', function() {
 
   it('should produce an error when there is an ambiguous abbreviation', () => {
     const line = computedLines[4];
-    expect(line.errors).not.toBeNull();
+    expect(line.errors).toHaveLength(1);
+    expect(line.errors[0].code).toBe('ALIEN_PERSON_ERROR');
+    expect(line.errors[0].type).toBe('error');
+    expect(line.errors[0].message).toContain('fra');
+    expect(errors[16][0].code).toBe('ALIEN_PERSON_ERROR');
   });
 
 });
