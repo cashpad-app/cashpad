@@ -1,15 +1,15 @@
-import peg from 'pegjs';
 import fs from 'fs';
-import uniq from 'lodash/uniq'
+import uniq from 'lodash/uniq';
 
 import brain from '../src/app.js';
 
 const wallet = fs.readFileSync('examples/valid.wallet', 'utf8');
 const computedLines = brain.parseAndCompute(wallet);
-const errors = brain.getErrors();
 const parser = brain.parser;
 const result = parser.parse(wallet);
 const lines = result.group.lines;
+
+/* eslint-disable max-len */
 
 describe('peg parser', () => {
   it('should parse a valid wallet file', () => {

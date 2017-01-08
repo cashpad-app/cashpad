@@ -1,4 +1,3 @@
-import peg from 'pegjs';
 import fs from 'fs';
 import brain from '../src/app.js';
 
@@ -6,7 +5,7 @@ const wallet = fs.readFileSync('examples/errors.wallet', 'utf8');
 const computedLines = brain.parseAndCompute(wallet);
 const errors = brain.getErrors();
 
-describe('brain (errors)', function() {
+describe('brain (errors)', () => {
 
   it('should produce an error when a beneficiary is not in the current group', () => {
     const line = computedLines[0];
